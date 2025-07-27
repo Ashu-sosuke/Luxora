@@ -27,28 +27,20 @@ import coil.request.ImageRequest
 import com.example.e_commerse.R
 import com.example.e_commerse.Screen
 
-val MatteBlack = Color(0xFF121212)
-val NeonGreen = Color(0xFFA6E22E)
+data class Furniture(val imgUrl: String, val name: String)
 
-data class cloth(val imgUrl: String, val name: String)
-
-val MensCothes = listOf(
-    cloth("https://images.unsplash.com/photo-1621072156002-e2fccdc0b176?q=80&w=687&auto=format&fit=crop", "Shirt"),
-    cloth("https://images.pexels.com/photos/1007864/pexels-photo-1007864.jpeg", "T-Shirt"),
-    cloth("https://images.pexels.com/photos/1804075/pexels-photo-1804075.jpeg", "Jeans"),
-    cloth("https://images.pexels.com/photos/33088117/pexels-photo-33088117.jpeg", "Kurta-Pyajama")
+val furnitureList = listOf(
+    Furniture("https://i.pinimg.com/1200x/a2/c4/c9/a2c4c9e1c609eb403b2ebe9bdc20b57f.jpg", "Sofa"),
+    Furniture("https://i.pinimg.com/736x/b0/c5/59/b0c559b4a50a4c2f67ee06d6c9c1d1a7.jpg", "Bean Bag"),
+    Furniture("https://i.pinimg.com/736x/bd/bc/a9/bdbca905d1f3b3895cc9570c8c70e9e2.jpg", "Chair"),
+    Furniture("https://i.pinimg.com/736x/87/e1/9e/87e19e4abf5dac13e54dc3b394ceb33d.jpg", "Dining Table")
 )
 
-val WomensClothes = listOf(
-    cloth("https://images.pexels.com/photos/2784078/pexels-photo-2784078.jpeg", "Saree"),
-    cloth("https://images.pexels.com/photos/22431192/pexels-photo-22431192.jpeg", "Kurti"),
-    cloth("https://images.pexels.com/photos/33152120/pexels-photo-33152120.jpeg", ("Tank Top")),
-    cloth("https://images.pexels.com/photos/4171763/pexels-photo-4171763.jpeg", "Maxi")
-)
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FashionScreen(navController: NavController) {
+fun FurnitureScreen(navController: NavController) {
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
     val bottomItems = listOf(
@@ -72,7 +64,7 @@ fun FashionScreen(navController: NavController) {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        "Fashion",
+                        "Furniture",
                         color = NeonGreen,
                         fontWeight = FontWeight.Bold,
                         fontSize = 22.sp,
@@ -130,18 +122,16 @@ fun FashionScreen(navController: NavController) {
                 .background(MatteBlack)
                 .padding(12.dp)
         ) {
-            ItemGridWithTitle("Men's Collection", MensCothes)
-            Spacer(modifier = Modifier.height(32.dp))
-            ItemGridWithTitle("Women's Collection", WomensClothes)
+            FurnitureGridWithTitle("Furniture", furnitureList)
         }
     }
 }
 
 @Composable
-fun ItemGridWithTitle(
+fun FurnitureGridWithTitle(
     title: String,
-    clothes: List<cloth>,
-    onItemClick: (cloth) -> Unit = {}
+    list: List<Furniture>,
+    onItemClick: (Furniture) -> Unit = {}
 ) {
     Column {
         Text(
@@ -152,7 +142,7 @@ fun ItemGridWithTitle(
             modifier = Modifier.padding(start = 8.dp, bottom = 12.dp)
         )
 
-        val chunked = clothes.chunked(2)
+        val chunked = list.chunked(2)
         chunked.forEach { rowItems ->
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -161,11 +151,10 @@ fun ItemGridWithTitle(
                     .padding(bottom = 20.dp)
             ) {
                 for (item in rowItems) {
-                    ItemCard(item = item, onClick = onItemClick, modifier = Modifier.weight(1f))
+                    FurnitureItemCard(item = item, onClick = onItemClick, modifier = Modifier.weight(1f))
                 }
-
                 if (rowItems.size == 1) {
-                    Spacer(modifier = Modifier.weight(1f)) // fill remaining space
+                    Spacer(modifier = Modifier.weight(1f))
                 }
             }
         }
@@ -173,7 +162,7 @@ fun ItemGridWithTitle(
 }
 
 @Composable
-fun ItemCard(item: cloth, onClick: (cloth) -> Unit, modifier: Modifier = Modifier) {
+fun FurnitureItemCard(item: Furniture, onClick: (Furniture) -> Unit, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier
             .height(220.dp)

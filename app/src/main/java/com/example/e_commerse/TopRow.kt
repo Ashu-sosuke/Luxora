@@ -56,6 +56,24 @@ fun CategoryRow(navController: NavController) {
                 if (item.label == "Fashion") {
                     navController.navigate(Screen.FashionScreen.route)
                 }
+                if(item.label == "Sports") {
+                    navController.navigate(Screen.SportScreen.route)
+                }
+                if(item.label == "Electronics") {
+                    navController.navigate(Screen.ElectronicScreen.route)
+                }
+                if(item.label == "Furniture") {
+                    navController.navigate(Screen.FurnitureScreen.route)
+                }
+                if(item.label == "Food & HealthCare") {
+                    navController.navigate(Screen.FoodScreen.route)
+                }
+                if(item.label == "Smart Gadgets") {
+                    navController.navigate(Screen.SmartDevice.route)
+                }
+                if(item.label == "Kitchen") {
+                    navController.navigate(Screen.KitchenScreen.route)
+                }
             })
         }
     }

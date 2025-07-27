@@ -12,5 +12,11 @@ sealed class Screen(val route: String) {
     object CategoryScreen : Screen("category")
 
     object FashionScreen: Screen("fashion")
+    object ElectronicScreen: Screen("electronics")
+    object SportScreen: Screen("sport")
+    object FurnitureScreen: Screen("furniture")
+    object FoodScreen: Screen("food")
+    object SmartDevice: Screen("smartdevice")
+    object KitchenScreen: Screen("Kitchen")
 
 }

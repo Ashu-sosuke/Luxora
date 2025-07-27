@@ -27,28 +27,19 @@ import coil.request.ImageRequest
 import com.example.e_commerse.R
 import com.example.e_commerse.Screen
 
-val MatteBlack = Color(0xFF121212)
-val NeonGreen = Color(0xFFA6E22E)
 
-data class cloth(val imgUrl: String, val name: String)
+data class Sport(val imgUrl: String, val name: String)
 
-val MensCothes = listOf(
-    cloth("https://images.unsplash.com/photo-1621072156002-e2fccdc0b176?q=80&w=687&auto=format&fit=crop", "Shirt"),
-    cloth("https://images.pexels.com/photos/1007864/pexels-photo-1007864.jpeg", "T-Shirt"),
-    cloth("https://images.pexels.com/photos/1804075/pexels-photo-1804075.jpeg", "Jeans"),
-    cloth("https://images.pexels.com/photos/33088117/pexels-photo-33088117.jpeg", "Kurta-Pyajama")
-)
-
-val WomensClothes = listOf(
-    cloth("https://images.pexels.com/photos/2784078/pexels-photo-2784078.jpeg", "Saree"),
-    cloth("https://images.pexels.com/photos/22431192/pexels-photo-22431192.jpeg", "Kurti"),
-    cloth("https://images.pexels.com/photos/33152120/pexels-photo-33152120.jpeg", ("Tank Top")),
-    cloth("https://images.pexels.com/photos/4171763/pexels-photo-4171763.jpeg", "Maxi")
+val sport = listOf(
+    Sport("https://i.pinimg.com/736x/e5/dc/4c/e5dc4c4989311ec89708ae79ce0a86f7.jpg", "Cycle"),
+    Sport("https://i.pinimg.com/736x/b2/17/45/b217450eef8e7ce9ee2952b0f8f409e8.jpg", "Yoga Mat"),
+    Sport("https://i.pinimg.com/736x/bf/e5/ac/bfe5ace04c1751afda600cf8e94ff877.jpg", "Dumbbell"),
+    Sport("https://i.pinimg.com/1200x/38/e7/3c/38e73caa8bb902fcd345b9ef7de5cc54.jpg", "Cricket")
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FashionScreen(navController: NavController) {
+fun SportScreen(navController: NavController) {
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
     val bottomItems = listOf(
@@ -72,7 +63,7 @@ fun FashionScreen(navController: NavController) {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        "Fashion",
+                        "Sport Items",
                         color = NeonGreen,
                         fontWeight = FontWeight.Bold,
                         fontSize = 22.sp,
@@ -130,9 +121,7 @@ fun FashionScreen(navController: NavController) {
                 .background(MatteBlack)
                 .padding(12.dp)
         ) {
-            ItemGridWithTitle("Men's Collection", MensCothes)
-            Spacer(modifier = Modifier.height(32.dp))
-            ItemGridWithTitle("Women's Collection", WomensClothes)
+            ItemGridWithTitle("Top Picks", sport)
         }
     }
 }
@@ -140,8 +129,8 @@ fun FashionScreen(navController: NavController) {
 @Composable
 fun ItemGridWithTitle(
     title: String,
-    clothes: List<cloth>,
-    onItemClick: (cloth) -> Unit = {}
+    clothes: List<Sport>,
+    onItemClick: (Sport) -> Unit = {}
 ) {
     Column {
         Text(
@@ -161,11 +150,16 @@ fun ItemGridWithTitle(
                     .padding(bottom = 20.dp)
             ) {
                 for (item in rowItems) {
-                    ItemCard(item = item, onClick = onItemClick, modifier = Modifier.weight(1f))
+                    ItemCard(
+                        item = item,
+                        onClick = onItemClick,
+                        modifier = Modifier.weight(1f)
+                    )
                 }
 
+                // If only 1 item in row, add Spacer to fill second column
                 if (rowItems.size == 1) {
-                    Spacer(modifier = Modifier.weight(1f)) // fill remaining space
+                    Spacer(modifier = Modifier.weight(1f))
                 }
             }
         }
@@ -173,14 +167,18 @@ fun ItemGridWithTitle(
 }
 
 @Composable
-fun ItemCard(item: cloth, onClick: (cloth) -> Unit, modifier: Modifier = Modifier) {
+fun ItemCard(
+    item: Sport,
+    onClick: (Sport) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Card(
+        onClick = { onClick(item) },
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1C)),
+        elevation = CardDefaults.cardElevation(6.dp),
         modifier = modifier
             .height(220.dp)
-            .clip(RoundedCornerShape(16.dp)),
-        onClick = { onClick(item) },
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1C)),
-        elevation = CardDefaults.cardElevation(8.dp),
     ) {
         Column {
             AsyncImage(
@@ -203,7 +201,8 @@ fun ItemCard(item: cloth, onClick: (cloth) -> Unit, modifier: Modifier = Modifie
                 fontWeight = FontWeight.Medium,
                 fontSize = 16.sp,
                 color = NeonGreen,
-                modifier = Modifier.padding(horizontal = 12.dp)
+                modifier = Modifier
+                    .padding(horizontal = 12.dp)
             )
         }
     }

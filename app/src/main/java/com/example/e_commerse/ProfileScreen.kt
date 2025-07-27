@@ -3,7 +3,12 @@ package com.example.e_commerse.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,6 +21,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.e_commerse.login.AuthViewModel
 
+val MatteBlack = Color(0xFF121212)
+val NeonGreen = Color(0xFF00FF9C)
+
 @Composable
 fun ProfileScreen(
     navController: NavController,
@@ -23,7 +31,6 @@ fun ProfileScreen(
 ) {
     val context = LocalContext.current
 
-    // Fetch user data once when screen is composed
     LaunchedEffect(Unit) {
         authViewModel.fetchUserData()
     }
@@ -34,32 +41,31 @@ fun ProfileScreen(
     val address by authViewModel.userAddress
 
     Surface(
-        modifier = Modifier
-            .fillMaxSize(),
-        color = Color.Black // matte black background
+        modifier = Modifier.fillMaxSize(),
+        color = MatteBlack
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .padding(24.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = "User Profile",
-                color = Color.White,
-                fontSize = 24.sp,
+                text = "Profile",
+                color = NeonGreen,
+                fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .padding(bottom = 32.dp, top = 16.dp)
+                    .padding(bottom = 24.dp, top = 12.dp)
             )
 
-            ProfileItem(label = "First Name:", value = firstName)
-            ProfileItem(label = "Last Name:", value = lastName)
-            ProfileItem(label = "Email:", value = email)
-            ProfileItem(label = "Address:", value = address)
+            ProfileCard(icon = Icons.Default.Person, label = "First Name", value = firstName)
+            ProfileCard(icon = Icons.Default.Person, label = "Last Name", value = lastName)
+            ProfileCard(icon = Icons.Default.Email, label = "Email", value = email)
+            ProfileCard(icon = Icons.Default.LocationOn, label = "Address", value = address)
 
             Spacer(modifier = Modifier.height(40.dp))
 
@@ -73,24 +79,58 @@ fun ProfileScreen(
                 },
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .padding(top = 16.dp),
+                    .fillMaxWidth()
+                    .height(50.dp),
+                shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.DarkGray,
-                    contentColor = Color.White
+                    containerColor = NeonGreen,
+                    contentColor = MatteBlack
                 )
             ) {
-                Text("Logout")
+                Text("Logout", fontWeight = FontWeight.Bold, fontSize = 16.sp)
             }
         }
     }
 }
 
 @Composable
-fun ProfileItem(label: String, value: String) {
-    Text(
-        text = "$label $value",
-        color = Color.White,
-        fontSize = 16.sp,
-        modifier = Modifier.padding(vertical = 6.dp)
-    )
+fun ProfileCard(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, value: String) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 6.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFF1F1F1F)
+        ),
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(4.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = label,
+                tint = NeonGreen,
+                modifier = Modifier
+                    .size(28.dp)
+                    .padding(end = 12.dp)
+            )
+            Column {
+                Text(
+                    text = label,
+                    color = Color.Gray,
+                    fontSize = 14.sp
+                )
+                Text(
+                    text = value,
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+        }
+    }
 }

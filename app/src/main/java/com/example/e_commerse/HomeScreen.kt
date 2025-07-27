@@ -1,6 +1,6 @@
-// HomeScreen.kt
 package com.example.e_commerse
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -17,6 +17,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+
+val MatteBlack = Color(0xFF121212)
+val NeonGreen = Color(0xFF00FF9C)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,27 +42,43 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
         R.drawable.outline_person_4_24
     )
 
-
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
     Scaffold(
+        containerColor = MatteBlack,
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("E-Commerce", fontWeight = FontWeight.Bold) }
+                title = {
+                    Text(
+                        "Luxora",
+                        fontWeight = FontWeight.Bold,
+                        color = NeonGreen,
+                        fontSize = 24.sp
+                    )
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.Gray
+                )
             )
         },
         bottomBar = {
-            NavigationBar {
+            NavigationBar(containerColor = Color.DarkGray) {
                 bottomItems.forEachIndexed { index, screen ->
                     NavigationBarItem(
                         icon = {
                             Icon(
                                 painter = painterResource(id = bottomIcons[index]),
                                 contentDescription = screen.route,
+                                tint = NeonGreen,
                                 modifier = Modifier.size(24.dp)
                             )
                         },
-                        label = { Text(screen.route.substringBefore("/").replaceFirstChar { it.uppercase() }) },
+                        label = {
+                            Text(
+                                screen.route.substringBefore("/").replaceFirstChar { it.uppercase() },
+                                color = NeonGreen
+                            )
+                        },
                         selected = currentRoute == screen.route,
                         onClick = {
                             navController.navigate(screen.route) {
@@ -72,13 +91,12 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
             }
         }
     ) { innerPadding ->
-
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .background(MatteBlack)
         ) {
-
             HomeContent(
                 searchQuery = searchQuery,
                 onSearchChange = { searchQuery = it },
@@ -95,7 +113,9 @@ fun HomeContent(
     navController: NavController
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MatteBlack),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp)
     ) {
@@ -103,21 +123,23 @@ fun HomeContent(
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = onSearchChange,
-                placeholder = { Text("Search for products...") },
+                placeholder = { Text("Search for products...", color = Color.LightGray) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 4.dp),
                 shape = RoundedCornerShape(10.dp),
                 singleLine = true,
                 trailingIcon = {
-                    Icon(Icons.Default.Search, contentDescription = "Search")
+                    Icon(Icons.Default.Search, contentDescription = "Search", tint = NeonGreen)
                 },
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent,
-                    focusedContainerColor = Color(0xFFF0F0F0),
-                    unfocusedContainerColor = Color(0xFFF0F0F0)
-                )
+                    focusedBorderColor = NeonGreen,
+                    unfocusedBorderColor = NeonGreen,
+                    focusedContainerColor = Color(0xFF1E1E1E),
+                    unfocusedContainerColor = Color(0xFF1E1E1E),
+                    cursorColor = NeonGreen
+                ),
+                textStyle = LocalTextStyle.current.copy(color = Color.White)
             )
         }
 
@@ -129,6 +151,7 @@ fun HomeContent(
                 text = "Top Picks",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
+                color = NeonGreen,
                 modifier = Modifier.padding(start = 4.dp)
             )
         }

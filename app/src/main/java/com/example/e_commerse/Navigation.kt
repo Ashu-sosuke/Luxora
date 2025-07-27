@@ -15,7 +15,13 @@ import com.example.e_commerse.login.LogInScreen
 import com.example.e_commerse.login.SignUpPage
 import com.example.e_commerse.login.UserPreferences
 import com.example.e_commerse.screens.ProfileScreen
+import com.example.e_commerse.sub_selection.ElectronicScreen
 import com.example.e_commerse.sub_selection.FashionScreen
+import com.example.e_commerse.sub_selection.FoodScreen
+import com.example.e_commerse.sub_selection.FurnitureScreen
+import com.example.e_commerse.sub_selection.KitchenScreen
+import com.example.e_commerse.sub_selection.SmartDevice
+import com.example.e_commerse.sub_selection.SportScreen
 
 @Composable
 fun Navigation() {
@@ -65,7 +71,25 @@ fun Navigation() {
         }
 
         composable(Screen.FashionScreen.route){
-            FashionScreen()
+            FashionScreen(navController)
+        }
+        composable(Screen.ElectronicScreen.route) {
+            ElectronicScreen(navController)
+        }
+        composable(Screen.SportScreen.route) {
+            SportScreen(navController)
+        }
+        composable(Screen.FurnitureScreen.route) {
+            FurnitureScreen(navController)
+        }
+        composable(Screen.FoodScreen.route) {
+            FoodScreen(navController)
+        }
+        composable(Screen.SmartDevice.route) {
+            SmartDevice(navController)
+        }
+        composable(Screen.KitchenScreen.route) {
+            KitchenScreen(navController)
         }
     }
 }

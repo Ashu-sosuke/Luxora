@@ -9,7 +9,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -27,28 +26,19 @@ import coil.request.ImageRequest
 import com.example.e_commerse.R
 import com.example.e_commerse.Screen
 
-val MatteBlack = Color(0xFF121212)
-val NeonGreen = Color(0xFFA6E22E)
 
-data class cloth(val imgUrl: String, val name: String)
+data class Electronic(val imgUrl: String, val name: String)
 
-val MensCothes = listOf(
-    cloth("https://images.unsplash.com/photo-1621072156002-e2fccdc0b176?q=80&w=687&auto=format&fit=crop", "Shirt"),
-    cloth("https://images.pexels.com/photos/1007864/pexels-photo-1007864.jpeg", "T-Shirt"),
-    cloth("https://images.pexels.com/photos/1804075/pexels-photo-1804075.jpeg", "Jeans"),
-    cloth("https://images.pexels.com/photos/33088117/pexels-photo-33088117.jpeg", "Kurta-Pyajama")
-)
-
-val WomensClothes = listOf(
-    cloth("https://images.pexels.com/photos/2784078/pexels-photo-2784078.jpeg", "Saree"),
-    cloth("https://images.pexels.com/photos/22431192/pexels-photo-22431192.jpeg", "Kurti"),
-    cloth("https://images.pexels.com/photos/33152120/pexels-photo-33152120.jpeg", ("Tank Top")),
-    cloth("https://images.pexels.com/photos/4171763/pexels-photo-4171763.jpeg", "Maxi")
+val electronic = listOf(
+    Electronic("https://i.pinimg.com/736x/db/1f/e2/db1fe2a55af18c48840879f755de0736.jpg", "Laptop"),
+    Electronic("https://i.pinimg.com/736x/5b/db/b2/5bdbb23f7585a52ea101ae90f3001300.jpg", "Mobile"),
+    Electronic("https://i.pinimg.com/736x/7e/1b/34/7e1b349b736c188c9170b31e01c46ad6.jpg", "Mouse"),
+    Electronic("https://i.pinimg.com/1200x/6b/1d/7c/6b1d7c691358dfe5a0807bc60f0ed2cf.jpg", "Keyboard")
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FashionScreen(navController: NavController) {
+fun ElectronicScreen(navController: NavController) {
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
     val bottomItems = listOf(
@@ -66,13 +56,14 @@ fun FashionScreen(navController: NavController) {
         R.drawable.heart,
         R.drawable.outline_person_4_24
     )
+
     Scaffold(
         containerColor = MatteBlack,
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        "Fashion",
+                        "Electronics",
                         color = NeonGreen,
                         fontWeight = FontWeight.Bold,
                         fontSize = 22.sp,
@@ -80,12 +71,12 @@ fun FashionScreen(navController: NavController) {
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate(Screen.HomeScreen.route) }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = null, tint = NeonGreen)
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = NeonGreen)
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Gray
+                    containerColor = Color.Black
                 )
             )
         },
@@ -130,9 +121,7 @@ fun FashionScreen(navController: NavController) {
                 .background(MatteBlack)
                 .padding(12.dp)
         ) {
-            ItemGridWithTitle("Men's Collection", MensCothes)
-            Spacer(modifier = Modifier.height(32.dp))
-            ItemGridWithTitle("Women's Collection", WomensClothes)
+            ItemGridWithTitle("Electronic Items", electronic)
         }
     }
 }
@@ -140,8 +129,8 @@ fun FashionScreen(navController: NavController) {
 @Composable
 fun ItemGridWithTitle(
     title: String,
-    clothes: List<cloth>,
-    onItemClick: (cloth) -> Unit = {}
+    items: List<Electronic>,
+    onItemClick: (Electronic) -> Unit = {}
 ) {
     Column {
         Text(
@@ -152,7 +141,7 @@ fun ItemGridWithTitle(
             modifier = Modifier.padding(start = 8.dp, bottom = 12.dp)
         )
 
-        val chunked = clothes.chunked(2)
+        val chunked = items.chunked(2)
         chunked.forEach { rowItems ->
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -165,7 +154,7 @@ fun ItemGridWithTitle(
                 }
 
                 if (rowItems.size == 1) {
-                    Spacer(modifier = Modifier.weight(1f)) // fill remaining space
+                    Spacer(modifier = Modifier.weight(1f))
                 }
             }
         }
@@ -173,7 +162,7 @@ fun ItemGridWithTitle(
 }
 
 @Composable
-fun ItemCard(item: cloth, onClick: (cloth) -> Unit, modifier: Modifier = Modifier) {
+fun ItemCard(item: Electronic, onClick: (Electronic) -> Unit, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier
             .height(220.dp)

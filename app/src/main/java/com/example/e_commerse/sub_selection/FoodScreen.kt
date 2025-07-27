@@ -27,28 +27,18 @@ import coil.request.ImageRequest
 import com.example.e_commerse.R
 import com.example.e_commerse.Screen
 
-val MatteBlack = Color(0xFF121212)
-val NeonGreen = Color(0xFFA6E22E)
+data class Food(val imgUrl: String, val name: String)
 
-data class cloth(val imgUrl: String, val name: String)
-
-val MensCothes = listOf(
-    cloth("https://images.unsplash.com/photo-1621072156002-e2fccdc0b176?q=80&w=687&auto=format&fit=crop", "Shirt"),
-    cloth("https://images.pexels.com/photos/1007864/pexels-photo-1007864.jpeg", "T-Shirt"),
-    cloth("https://images.pexels.com/photos/1804075/pexels-photo-1804075.jpeg", "Jeans"),
-    cloth("https://images.pexels.com/photos/33088117/pexels-photo-33088117.jpeg", "Kurta-Pyajama")
-)
-
-val WomensClothes = listOf(
-    cloth("https://images.pexels.com/photos/2784078/pexels-photo-2784078.jpeg", "Saree"),
-    cloth("https://images.pexels.com/photos/22431192/pexels-photo-22431192.jpeg", "Kurti"),
-    cloth("https://images.pexels.com/photos/33152120/pexels-photo-33152120.jpeg", ("Tank Top")),
-    cloth("https://images.pexels.com/photos/4171763/pexels-photo-4171763.jpeg", "Maxi")
+val food = listOf(
+    Food("https://i.pinimg.com/736x/95/8a/29/958a2983e1761003acf6fb8ee58ab336.jpg", "Peanut Butter"),
+    Food("https://i.pinimg.com/736x/64/96/d6/6496d68c82690ecb1b08eed9f5c67322.jpg", "Chocolate"),
+    Food("https://i.pinimg.com/1200x/c4/73/7e/c4737e013a673e196416210867f9b1f8.jpg", "Coffee"),
+    Food("https://i.pinimg.com/736x/64/58/76/6458765492afb4d81a940108edbd319d.jpg", "Dry Fruit")
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FashionScreen(navController: NavController) {
+fun FoodScreen(navController: NavController) {
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
     val bottomItems = listOf(
@@ -72,7 +62,7 @@ fun FashionScreen(navController: NavController) {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        "Fashion",
+                        "Food",
                         color = NeonGreen,
                         fontWeight = FontWeight.Bold,
                         fontSize = 22.sp,
@@ -130,9 +120,7 @@ fun FashionScreen(navController: NavController) {
                 .background(MatteBlack)
                 .padding(12.dp)
         ) {
-            ItemGridWithTitle("Men's Collection", MensCothes)
-            Spacer(modifier = Modifier.height(32.dp))
-            ItemGridWithTitle("Women's Collection", WomensClothes)
+            ItemGridWithTitle("Food", food)
         }
     }
 }
@@ -140,8 +128,8 @@ fun FashionScreen(navController: NavController) {
 @Composable
 fun ItemGridWithTitle(
     title: String,
-    clothes: List<cloth>,
-    onItemClick: (cloth) -> Unit = {}
+    items: List<Food>,
+    onItemClick: (Food) -> Unit = {}
 ) {
     Column {
         Text(
@@ -152,7 +140,7 @@ fun ItemGridWithTitle(
             modifier = Modifier.padding(start = 8.dp, bottom = 12.dp)
         )
 
-        val chunked = clothes.chunked(2)
+        val chunked = items.chunked(2)
         chunked.forEach { rowItems ->
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -163,7 +151,6 @@ fun ItemGridWithTitle(
                 for (item in rowItems) {
                     ItemCard(item = item, onClick = onItemClick, modifier = Modifier.weight(1f))
                 }
-
                 if (rowItems.size == 1) {
                     Spacer(modifier = Modifier.weight(1f)) // fill remaining space
                 }
@@ -173,7 +160,7 @@ fun ItemGridWithTitle(
 }
 
 @Composable
-fun ItemCard(item: cloth, onClick: (cloth) -> Unit, modifier: Modifier = Modifier) {
+fun ItemCard(item: Food, onClick: (Food) -> Unit, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier
             .height(220.dp)
