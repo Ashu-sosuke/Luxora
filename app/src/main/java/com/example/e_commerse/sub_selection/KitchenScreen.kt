@@ -27,13 +27,13 @@ import com.example.e_commerse.R
 import com.example.e_commerse.Screen
 
 
-data class Product(val imgUrl: String, val name: String)
+data class KitchenProduct(val imgUrl: String, val name: String)
 
 // ✅ Sample product list
 val kitchenProducts = listOf(
-    Product("https://i.pinimg.com/1200x/36/60/30/3660305247fbee93032363a7d3c50e22.jpg", "Refrigerator"),
-    Product("https://i.pinimg.com/736x/6d/a4/52/6da4520d836af3e46a49d7e3040fa24b.jpg", "Stove"),
-    Product("https://i.pinimg.com/736x/29/7d/03/297d03e7da40a818b918e86ead7f8103.jpg", "Masala Set"),
+    KitchenProduct("https://i.pinimg.com/1200x/36/60/30/3660305247fbee93032363a7d3c50e22.jpg", "Refrigerator"),
+    KitchenProduct("https://i.pinimg.com/736x/6d/a4/52/6da4520d836af3e46a49d7e3040fa24b.jpg", "Stove"),
+    KitchenProduct("https://i.pinimg.com/736x/29/7d/03/297d03e7da40a818b918e86ead7f8103.jpg", "Masala Set"),
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -129,8 +129,8 @@ fun KitchenScreen(navController: NavController) {
 @Composable
 fun ItemGridWithTitle(
     title: String,
-    items: List<Product>,
-    onItemClick: (Product) -> Unit = {}
+    items: List<KitchenProduct>,
+    onItemClick: (KitchenProduct) -> Unit = {}
 ) {
     Column {
         Text(
@@ -161,7 +161,7 @@ fun ItemGridWithTitle(
 }
 
 @Composable
-fun ItemCard(item: Product, onClick: (Product) -> Unit, modifier: Modifier = Modifier) {
+fun ItemCard(item: KitchenProduct, onClick: (KitchenProduct) -> Unit, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier
             .height(220.dp)

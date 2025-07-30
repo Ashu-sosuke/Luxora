@@ -14,6 +14,8 @@ import com.example.e_commerse.login.AuthViewModel
 import com.example.e_commerse.login.LogInScreen
 import com.example.e_commerse.login.SignUpPage
 import com.example.e_commerse.login.UserPreferences
+import com.example.e_commerse.products.ShirtScreen
+import com.example.e_commerse.products.singleShirt
 import com.example.e_commerse.screens.ProfileScreen
 import com.example.e_commerse.sub_selection.ElectronicScreen
 import com.example.e_commerse.sub_selection.FashionScreen
@@ -91,6 +93,11 @@ fun Navigation() {
         composable(Screen.KitchenScreen.route) {
             KitchenScreen(navController)
         }
+
+        composable("shirt") {
+            ShirtScreen(shirt = singleShirt)
+        }
+
     }
 }
 

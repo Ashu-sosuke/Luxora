@@ -23,7 +23,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.e_commerse.R
 import com.example.e_commerse.Screen
-import kotlinx.coroutines.launch
 
 @Composable
 fun LogInScreen(navController: NavHostController) {

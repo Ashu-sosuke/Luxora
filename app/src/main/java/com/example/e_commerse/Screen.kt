@@ -19,4 +19,6 @@ sealed class Screen(val route: String) {
     object SmartDevice: Screen("smartdevice")
     object KitchenScreen: Screen("Kitchen")
 
+
+
 }

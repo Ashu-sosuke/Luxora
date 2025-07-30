@@ -19,10 +19,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.e_commerse.Screen
 import com.example.e_commerse.login.AuthViewModel
 
 val MatteBlack = Color(0xFF121212)
 val NeonGreen = Color(0xFF00FF9C)
+
 
 @Composable
 fun ProfileScreen(
@@ -72,7 +74,7 @@ fun ProfileScreen(
             Button(
                 onClick = {
                     authViewModel.logout(context) {
-                        navController.navigate("LoginScreen") {
+                        navController.navigate(Screen.LoginScreen.route) {
                             popUpTo("ProfileScreen") { inclusive = true }
                         }
                     }

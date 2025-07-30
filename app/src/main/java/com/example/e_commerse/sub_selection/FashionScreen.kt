@@ -26,6 +26,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.e_commerse.R
 import com.example.e_commerse.Screen
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 val MatteBlack = Color(0xFF121212)
 val NeonGreen = Color(0xFFA6E22E)
@@ -130,7 +132,11 @@ fun FashionScreen(navController: NavController) {
                 .background(MatteBlack)
                 .padding(12.dp)
         ) {
-            ItemGridWithTitle("Men's Collection", MensCothes)
+            ItemGridWithTitle("Men's Collection", MensCothes){item->
+                when(item.name.lowercase()) {
+                    "shirt" -> navController.navigate("shirt")
+                }
+            }
             Spacer(modifier = Modifier.height(32.dp))
             ItemGridWithTitle("Women's Collection", WomensClothes)
         }
@@ -165,7 +171,7 @@ fun ItemGridWithTitle(
                 }
 
                 if (rowItems.size == 1) {
-                    Spacer(modifier = Modifier.weight(1f)) // fill remaining space
+                    Spacer(modifier = Modifier.weight(1f))
                 }
             }
         }
@@ -208,3 +214,6 @@ fun ItemCard(item: cloth, onClick: (cloth) -> Unit, modifier: Modifier = Modifie
         }
     }
 }
+
+fun encodeParam(param: String): String =
+    URLEncoder.encode(param, StandardCharsets.UTF_8.toString())
