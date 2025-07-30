@@ -195,14 +195,29 @@ fun LogInScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(
-                text = "Don't have an account? Sign Up",
-                color = Color(0xFFA6E22E),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.clickable {
-                    navController.navigate(Screen.SignUpScreen.route)
-                }
-            )
+            Column(
+                modifier = Modifier.padding(8.dp)
+            ) {
+                Text(
+                    text = "Don't have an account? Sign Up",
+                    color = Color(0xFFA6E22E),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.clickable {
+                        navController.navigate(Screen.SignUpScreen.route)
+                    }
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "Admin LogIn",
+                    color = Color(0xFFA6E22E),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.clickable {
+                        navController.navigate("admin_login")
+                    }
+                )
+
+            }
         }
     }
 }

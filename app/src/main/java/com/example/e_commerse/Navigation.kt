@@ -10,6 +10,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.e_commerse.admin.AdminUploadScreen
+import com.example.e_commerse.login.AdminLoginScreen
 import com.example.e_commerse.login.AuthViewModel
 import com.example.e_commerse.login.LogInScreen
 import com.example.e_commerse.login.SignUpPage
@@ -97,7 +99,13 @@ fun Navigation() {
         composable("shirt") {
             ShirtScreen(shirt = singleShirt)
         }
+        composable("admin_screen") {
+            AdminUploadScreen()
+        }
 
+        composable("admin_login") {
+            AdminLoginScreen(navController)
+        }
     }
 }
 
