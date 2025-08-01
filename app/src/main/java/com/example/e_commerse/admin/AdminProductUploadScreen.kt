@@ -2,6 +2,7 @@ package com.example.e_commerse.admin
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -12,15 +13,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.e_commerse.NeonGreen
+import com.example.e_commerse.Screen
+import com.example.e_commerse.login.AuthViewModel
+import com.example.e_commerse.screens.MatteBlack
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AdminUploadScreen() {
+fun AdminUploadScreen(navController: NavController) {
     val context = LocalContext.current
     val db = FirebaseFirestore.getInstance()
     val currentUser = FirebaseAuth.getInstance().currentUser
@@ -34,6 +40,8 @@ fun AdminUploadScreen() {
     var category by remember { mutableStateOf("") }
     var uploadStatus by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
+    val viewModel: AuthViewModel = viewModel()
+
 
     var isAdmin by remember { mutableStateOf<Boolean?>(null) } // null = loading
 
@@ -193,6 +201,28 @@ fun AdminUploadScreen() {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Upload Product")
+                }
+                Spacer(modifier = Modifier.height(40.dp))
+
+                Button(
+                    onClick = {
+                        viewModel.logout(context) {
+                            navController.navigate(Screen.LoginScreen.route) {
+                                popUpTo(Screen.LoginScreen.route) { inclusive = true }
+                            }
+                        }
+                    },
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = com.example.e_commerse.screens.NeonGreen,
+                        contentColor = MatteBlack
+                    )
+                ) {
+                    Text("Logout", fontWeight = FontWeight.Bold, fontSize = 16.sp)
                 }
 
                 if (uploadStatus.isNotBlank()) {

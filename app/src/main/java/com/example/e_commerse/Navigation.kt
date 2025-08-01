@@ -100,7 +100,7 @@ fun Navigation() {
             ShirtScreen(shirt = singleShirt)
         }
         composable("admin_screen") {
-            AdminUploadScreen()
+            AdminUploadScreen(navController)
         }
 
         composable("admin_login") {
