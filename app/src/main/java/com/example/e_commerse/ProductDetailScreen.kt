@@ -1,6 +1,7 @@
 package com.example.e_commerse
 
 
+import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -20,7 +21,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import com.google.firebase.firestore.FirebaseFirestore
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,6 +32,7 @@ fun ProductDetailScreen(productId: String, navController: NavController) {
     val db = FirebaseFirestore.getInstance()
     var product by remember { mutableStateOf<Product?>(null) }
     var isLoading by remember { mutableStateOf(true) }
+
 
     LaunchedEffect(productId) {
         db.collection("products").document(productId)
@@ -83,13 +88,31 @@ fun ProductDetailScreen(productId: String, navController: NavController) {
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(it.description ?: "No description available.", fontSize = 14.sp, color = Color.Gray)
                     Spacer(modifier = Modifier.height(24.dp))
-                    Button(
-                        onClick = { /* TODO: Add to cart */ },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(containerColor = NeonGreen)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Text("Add to Cart", color = Color.Black)
+                        Button(
+                            onClick = { /* TODO: Add to cart */ },
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.buttonColors(containerColor = NeonGreen)
+                        ) {
+                            Text("Add to Cart", color = Color.Black)
+                        }
+
+                        Button(
+                            onClick = {
+                                navController.navigate("payment/${productId}")
+                            },
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.White)
+                        ) {
+                            Text("Buy Now", color = Color.Black)
+                        }
                     }
+
                 }
             } ?: Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text("Product not found", color = Color.Red)

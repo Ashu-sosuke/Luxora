@@ -29,9 +29,9 @@ fun Navigation() {
         composable(Screen.HomeScreen.route) { HomeScreen(navController) }
 
         // Bottom Nav Screens
-        composable(Screen.ExploreScreen.route) { ExploreScreen() }
-        composable(Screen.OrderScreen.route) { OrdersScreen() }
-        composable(Screen.WishlistScreen.route) { WishlistScreen() }
+        composable(Screen.ExploreScreen.route) { ExploreScreen(navController) }
+        composable(Screen.OrderScreen.route) { OrdersScreen(navController) }
+        composable(Screen.WishlistScreen.route) { WishlistScreen(navController) }
         composable(Screen.ProfileScreen.route) {
             ProfileScreen(navController = navController, authViewModel = authViewModel)
         }
@@ -81,5 +81,11 @@ fun Navigation() {
             val decodedId = URLDecoder.decode(encodedId, "UTF-8")
             ProductDetailScreen(productId = decodedId, navController = navController)
         }
+
+        composable("payment/{productId}") { backStackEntry ->
+            val productId = backStackEntry.arguments?.getString("productId") ?: ""
+            PaymentScreen(productId = productId, navController = navController)
+        }
+
     }
 }

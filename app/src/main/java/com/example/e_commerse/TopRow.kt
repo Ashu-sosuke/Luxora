@@ -108,7 +108,7 @@ fun CategoryItemView(item: CategoryItem, onClick: () -> Unit) {
         Text(
             text = item.label,
             fontSize = 12.sp,
-            color = Color.DarkGray,
+            color = Color.White,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center,
