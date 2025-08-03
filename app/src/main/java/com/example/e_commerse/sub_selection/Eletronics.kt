@@ -25,6 +25,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.e_commerse.R
 import com.example.e_commerse.Screen
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 
 data class Electronic(val imgUrl: String, val name: String)
@@ -121,7 +123,9 @@ fun ElectronicScreen(navController: NavController) {
                 .background(MatteBlack)
                 .padding(12.dp)
         ) {
-            ItemGridWithTitle("Electronic Items", electronic)
+            ItemGridWithTitle("Electronic Items", electronic){ item ->
+                navController.navigate("product_list/Electronics/${encodeParam(item.name)}")
+            }
         }
     }
 }
@@ -197,3 +201,4 @@ fun ItemCard(item: Electronic, onClick: (Electronic) -> Unit, modifier: Modifier
         }
     }
 }
+

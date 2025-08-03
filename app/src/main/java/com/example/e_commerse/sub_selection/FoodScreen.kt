@@ -120,7 +120,9 @@ fun FoodScreen(navController: NavController) {
                 .background(MatteBlack)
                 .padding(12.dp)
         ) {
-            ItemGridWithTitle("Food", food)
+            ItemGridWithTitle("Food", food){ item ->
+                navController.navigate("product_list/Food & HealthCare/${encodeParam(item.name)}")
+            }
         }
     }
 }

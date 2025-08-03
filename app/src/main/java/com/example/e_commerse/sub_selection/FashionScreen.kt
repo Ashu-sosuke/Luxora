@@ -68,6 +68,7 @@ fun FashionScreen(navController: NavController) {
         R.drawable.heart,
         R.drawable.outline_person_4_24
     )
+
     Scaffold(
         containerColor = MatteBlack,
         topBar = {
@@ -82,12 +83,12 @@ fun FashionScreen(navController: NavController) {
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate(Screen.HomeScreen.route) }) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = null, tint = NeonGreen)
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Gray
+                    containerColor = Color.DarkGray
                 )
             )
         },
@@ -132,16 +133,17 @@ fun FashionScreen(navController: NavController) {
                 .background(MatteBlack)
                 .padding(12.dp)
         ) {
-            ItemGridWithTitle("Men's Collection", MensCothes){item->
-                when(item.name.lowercase()) {
-                    "shirt" -> navController.navigate("shirt")
-                }
+            ItemGridWithTitle("Men's Collection", MensCothes) { item ->
+                navController.navigate("product_list/Fashion/${encodeParam(item.name)}")
             }
             Spacer(modifier = Modifier.height(32.dp))
-            ItemGridWithTitle("Women's Collection", WomensClothes)
+            ItemGridWithTitle("Women's Collection", WomensClothes) { item ->
+                navController.navigate("product_list/Fashion/${encodeParam(item.name)}")
+            }
         }
     }
 }
+
 
 @Composable
 fun ItemGridWithTitle(

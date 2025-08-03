@@ -121,7 +121,9 @@ fun KitchenScreen(navController: NavController) {
                 .background(MatteBlack)
                 .padding(12.dp)
         ) {
-            ItemGridWithTitle("Kitchen Items", kitchenProducts)
+            ItemGridWithTitle("Kitchen Items", kitchenProducts){ item ->
+                navController.navigate("product_list/Kitchen/${encodeParam(item.name)}")
+            }
         }
     }
 }

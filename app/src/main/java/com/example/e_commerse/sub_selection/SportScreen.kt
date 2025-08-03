@@ -121,7 +121,9 @@ fun SportScreen(navController: NavController) {
                 .background(MatteBlack)
                 .padding(12.dp)
         ) {
-            ItemGridWithTitle("Top Picks", sport)
+            ItemGridWithTitle("Top Picks", sport){ item ->
+                navController.navigate("product_list/Sports/${encodeParam(item.name)}")
+            }
         }
     }
 }

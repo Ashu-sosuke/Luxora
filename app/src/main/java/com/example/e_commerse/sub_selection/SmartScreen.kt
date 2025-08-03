@@ -120,7 +120,9 @@ fun SmartDevice(navController: NavController) {
                 .background(MatteBlack)
                 .padding(12.dp)
         ) {
-            ItemGridWithTitle("Top Picks", smartDevices)
+            ItemGridWithTitle("Top Picks", smartDevices){ item ->
+                navController.navigate("product_list/Smart Gadgets/${encodeParam(item.name)}")
+            }
         }
     }
 }
