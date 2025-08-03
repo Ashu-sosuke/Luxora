@@ -94,7 +94,6 @@ fun PaymentScreen(productId: String, navController: NavController) {
                 product = doc.toObject(Product::class.java)
             }
     }
-
     Scaffold(
         topBar = {
             TopAppBar(
