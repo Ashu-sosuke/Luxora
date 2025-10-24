@@ -42,14 +42,14 @@ fun OrdersScreen(navController: NavController){
 
 
     Scaffold(
-        containerColor = MatteBlack,
+        containerColor = MatteWhite,
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
                         text = "Your Order",
                         fontWeight = FontWeight.Bold,
-                        color = NeonGreen,
+                        color = NeonBlue,
                         fontSize = 22.sp
                     )
                 },
@@ -70,14 +70,14 @@ fun OrdersScreen(navController: NavController){
                             Icon(
                                 painter = painterResource(id = bottomIcons[index]),
                                 contentDescription = screen.route,
-                                tint = if (isSelected) NeonGreen else Color.LightGray,
+                                tint = if (isSelected) NeonBlue else Color.LightGray,
                                 modifier = Modifier.size(24.dp)
                             )
                         },
                         label = {
                             Text(
                                 screen.route.substringBefore("/").replaceFirstChar { it.uppercase() },
-                                color = if (isSelected) NeonGreen else Color.LightGray,
+                                color = if (isSelected) NeonBlue else Color.LightGray,
                                 fontSize = 12.sp
                             )
                         },

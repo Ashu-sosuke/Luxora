@@ -97,16 +97,16 @@ fun PaymentScreen(productId: String, navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Payment", color = NeonGreen) },
+                title = { Text("Payment", color = NeonBlue) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = NeonGreen)
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = NeonBlue)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.DarkGray)
             )
         },
-        containerColor = MatteBlack
+        containerColor = MatteWhite
     ) { padding ->
         Column(
             modifier = Modifier
@@ -119,7 +119,7 @@ fun PaymentScreen(productId: String, navController: NavController) {
                 Column {
                     Text("You are about to buy:", color = Color.White, fontSize = 18.sp)
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(it.name, color = NeonGreen, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                    Text(it.name, color = NeonBlue, fontSize = 22.sp, fontWeight = FontWeight.Bold)
                     Text("Price: ₹${it.price}", color = Color.White, fontSize = 18.sp)
                     Spacer(modifier = Modifier.height(24.dp))
                 }
@@ -137,7 +137,7 @@ fun PaymentScreen(productId: String, navController: NavController) {
                     navController.navigate("order_success")
                 },
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = NeonGreen)
+                colors = ButtonDefaults.buttonColors(containerColor = NeonBlue)
             ) {
                 Text("Pay Now", color = Color.Black)
             }

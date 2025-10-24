@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.e_commerse.NeonGreen
+import com.example.e_commerse.NeonBlue
 import com.example.e_commerse.Screen
 import com.example.e_commerse.screens.MatteBlack
 import com.google.firebase.auth.FirebaseAuth
@@ -70,7 +70,7 @@ fun AdminLoginScreen(navController: NavController) {
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Admin Login", style = MaterialTheme.typography.headlineSmall, color = NeonGreen)
+            Text("Admin Login", style = MaterialTheme.typography.headlineSmall, color = NeonBlue)
 
             OutlinedTextField(
                 value = email,
@@ -99,7 +99,7 @@ fun AdminLoginScreen(navController: NavController) {
                 Checkbox(
                     checked = rememberMe,
                     onCheckedChange = { rememberMe = it },
-                    colors = CheckboxDefaults.colors(checkedColor = NeonGreen)
+                    colors = CheckboxDefaults.colors(checkedColor = NeonBlue)
                 )
                 Text("Remember Me", color = Color.Black)
             }

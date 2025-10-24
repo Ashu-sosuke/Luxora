@@ -34,14 +34,14 @@ fun WishlistScreen(navController: NavController) {
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
     Scaffold(
-        containerColor = MatteBlack,
+        containerColor = MatteWhite,
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
                         text = "Wishlist",
                         fontWeight = FontWeight.Bold,
-                        color = NeonGreen,
+                        color = NeonBlue,
                         fontSize = 22.sp
                     )
                 },
@@ -50,7 +50,7 @@ fun WishlistScreen(navController: NavController) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Back",
-                            tint = NeonGreen
+                            tint = NeonBlue
                         )
                     }
                 },

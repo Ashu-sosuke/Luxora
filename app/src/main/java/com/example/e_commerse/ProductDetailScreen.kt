@@ -49,20 +49,20 @@ fun ProductDetailScreen(productId: String, navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Product Detail", color = NeonGreen) },
+                title = { Text("Product Detail", color = NeonBlue) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = NeonGreen)
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = NeonBlue)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.DarkGray)
             )
         },
-        containerColor = MatteBlack
+        containerColor = MatteWhite
     ) { padding ->
         if (isLoading) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(color = NeonGreen)
+                CircularProgressIndicator(color = NeonBlue)
             }
         } else {
             product?.let {
@@ -84,7 +84,7 @@ fun ProductDetailScreen(productId: String, navController: NavController) {
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(it.name, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                    Text("₹${it.price}", fontSize = 18.sp, color = NeonGreen)
+                    Text("₹${it.price}", fontSize = 18.sp, color = NeonBlue)
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(it.description ?: "No description available.", fontSize = 14.sp, color = Color.Gray)
                     Spacer(modifier = Modifier.height(24.dp))
@@ -97,7 +97,7 @@ fun ProductDetailScreen(productId: String, navController: NavController) {
                         Button(
                             onClick = { /* TODO: Add to cart */ },
                             modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.buttonColors(containerColor = NeonGreen)
+                            colors = ButtonDefaults.buttonColors(containerColor = NeonBlue)
                         ) {
                             Text("Add to Cart", color = Color.Black)
                         }

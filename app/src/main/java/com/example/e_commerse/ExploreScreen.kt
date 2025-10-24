@@ -1,5 +1,6 @@
 package com.example.e_commerse
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -8,6 +9,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -17,7 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -43,20 +47,20 @@ fun ExploreScreen(navController: NavController) {
     val currentRoute by navController.currentBackStackEntryAsState()
 
     Scaffold(
-        containerColor = MatteBlack,
+        containerColor = MatteWhite,
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
                         text = "Explore Category",
                         fontWeight = FontWeight.Bold,
-                        color = NeonGreen,
+                        color = NeonBlue,
                         fontSize = 22.sp
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = NeonGreen)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = NeonBlue)
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -110,14 +114,14 @@ fun BottomNavBar(
                     Icon(
                         painter = painterResource(id = bottomIcons[index]),
                         contentDescription = screen.route,
-                        tint = if (isSelected) NeonGreen else Color.LightGray,
+                        tint = if (isSelected) NeonBlue else Color.LightGray,
                         modifier = Modifier.size(24.dp)
                     )
                 },
                 label = {
                     Text(
                         screen.route.substringBefore("/").replaceFirstChar { it.uppercase() },
-                        color = if (isSelected) NeonGreen else Color.LightGray,
+                        color = if (isSelected) NeonBlue else Color.LightGray,
                         fontSize = 12.sp
                     )
                 },
@@ -140,36 +144,27 @@ fun ECategoryItemView(item: CategoryItem, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(Color.DarkGray)
+            .background(LightBlue)
             .clickable(onClick = onClick)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Icon(
+        Image(
             painter = painterResource(id = item.icon),
             contentDescription = item.label,
-            tint = NeonGreen,
-            modifier = Modifier.size(48.dp)
+            modifier = Modifier.size(60.dp)
         )
         Spacer(modifier = Modifier.height(12.dp))
         Text(
             text = item.label,
-            color = Color.White,
             fontSize = 14.sp,
-            fontWeight = FontWeight.SemiBold
+            fontFamily = FontFamily.SansSerif,
+            fontWeight = FontWeight.Medium,
+            color = TextBlack,
+            textAlign = TextAlign.Center,
+            maxLines = 2,
+            softWrap = true
         )
     }
 }
 
-
-fun navigateToCategory(navController: NavController, label: String) {
-    when (label) {
-        "Fashion" -> navController.navigate(Screen.FashionScreen.route)
-        "Sports" -> navController.navigate(Screen.SportScreen.route)
-        "Electronics" -> navController.navigate(Screen.ElectronicScreen.route)
-        "Furniture" -> navController.navigate(Screen.FurnitureScreen.route)
-        "Food & HealthCare" -> navController.navigate(Screen.FoodScreen.route)
-        "Smart Gadgets" -> navController.navigate(Screen.SmartDevice.route)
-        "Kitchen" -> navController.navigate(Screen.KitchenScreen.route)
-    }
-}

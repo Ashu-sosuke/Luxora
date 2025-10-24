@@ -64,22 +64,22 @@ fun ProductListScreen(
                 title = {
                     Text(
                         text = subCategory.replaceFirstChar { it.uppercaseChar() },
-                        color = NeonGreen
+                        color = NeonBlue
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = NeonGreen)
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = NeonBlue)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.DarkGray)
             )
         },
-        containerColor = MatteBlack
+        containerColor = MatteWhite
     ) { padding ->
         if (isLoading) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(color = NeonGreen)
+                CircularProgressIndicator(color = NeonBlue)
             }
         } else {
             if (products.isEmpty()) {
@@ -141,7 +141,7 @@ fun ProductCard(product: Product, onClick: () -> Unit) {
             Text(
                 text = "₹${product.price}",
                 fontSize = 13.sp,
-                color = NeonGreen
+                color = NeonBlue
             )
         }
     }

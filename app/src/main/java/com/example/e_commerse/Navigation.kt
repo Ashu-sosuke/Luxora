@@ -36,14 +36,6 @@ fun Navigation() {
             ProfileScreen(navController = navController, authViewModel = authViewModel)
         }
 
-        // Category Entry
-        composable(
-            route = Screen.CategoryScreen.route + "/{categoryName}",
-            arguments = listOf(navArgument("categoryName") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
-            CategoryScreen(categoryName)
-        }
 
         // Subcategory Screens
         composable(Screen.FashionScreen.route) { FashionScreen(navController) }

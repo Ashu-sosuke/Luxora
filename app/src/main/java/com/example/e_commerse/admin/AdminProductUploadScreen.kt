@@ -21,7 +21,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.e_commerse.NeonGreen
+import com.example.e_commerse.NeonBlue
 import com.example.e_commerse.R
 import com.example.e_commerse.Screen
 import com.example.e_commerse.login.AuthViewModel
@@ -86,7 +86,7 @@ fun AdminUploadScreen(navController: NavController) {
                     title = {
                         Text(
                             "Luxora",
-                            color = NeonGreen,
+                            color = NeonBlue,
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 29.sp
                         )
@@ -125,7 +125,7 @@ fun AdminUploadScreen(navController: NavController) {
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text("Upload Product", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = NeonGreen)
+                    Text("Upload Product", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = NeonBlue)
 
                     OutlinedTextField(
                         value = name,
@@ -331,7 +331,7 @@ fun AdminUploadScreen(navController: NavController) {
                             .height(50.dp),
                         shape = RoundedCornerShape(16.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = NeonGreen,
+                            containerColor = NeonBlue,
                             contentColor = MatteBlack
                         )
                     ) {
