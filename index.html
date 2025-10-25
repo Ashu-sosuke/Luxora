@@ -1,20 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Luxora - Price Comparison App</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Luxora - Smart Price Comparison App</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; padding: 2rem; background: #0e0e0e; color: #fff; }
-    h1 { color: #00ff88; }
-    a { color: #00bfff; text-decoration: none; }
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(circle at top, #111 0%, #000 100%);
+      color: #fff;
+      text-align: center;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      color: #00ff99;
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 20px #00ff99;
+    }
+
+    p {
+      max-width: 600px;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin: 0.5rem 1rem;
+    }
+
+    a {
+      display: inline-block;
+      margin-top: 2rem;
+      padding: 0.8rem 1.5rem;
+      color: #00ff99;
+      border: 2px solid #00ff99;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    a:hover {
+      background: #00ff99;
+      color: #000;
+      box-shadow: 0 0 20px #00ff99;
+    }
+
+    footer {
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+
+    .logo {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 2px solid #00ff99;
+      box-shadow: 0 0 25px #00ff99;
+      margin-bottom: 1rem;
+      object-fit: cover;
+    }
   </style>
 </head>
 <body>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Amazon_icon.svg" alt="Luxora Logo" class="logo" />
   <h1>Luxora</h1>
-  <p>Luxora is a price comparison and shopping app that helps users find the best deals across Amazon, Flipkart, and other stores.</p>
-  <p>As an Amazon Associate, we earn from qualifying purchases.</p>
-  <p>Stay tuned for launch!</p>
-  <a href="https://github.com/Ashu-sosuke/Luxora">View the source code on GitHub</a>
+  <p>Luxora is your ultimate smart shopping companion. Compare prices from top e-commerce stores like <b>Amazon</b>, <b>Flipkart</b>, and more — all in one app.</p>
+  <p>Find the lowest price instantly, track deals, and even buy directly from your favorite platform using affiliate links.</p>
+
+  <a href="https://github.com/Ashu-sosuke/Luxora" target="_blank">View App Repository</a>
+
+  <footer>
+    <p><b>Affiliate Disclosure:</b> As an Amazon Associate, we earn from qualifying purchases made through links on this app.</p>
+    <p>© 2025 Luxora. All Rights Reserved.</p>
+  </footer>
 </body>
 </html>
