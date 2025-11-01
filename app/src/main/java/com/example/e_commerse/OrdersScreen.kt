@@ -3,6 +3,7 @@ package com.example.e_commerse
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -25,10 +26,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 @Composable
 fun OrdersScreen(navController: NavController){
     val bottomIcons = listOf(
-        R.drawable.baseline_home_24,
+        R.drawable.outline_home_24,
         R.drawable.expolre,
         R.drawable.outline_shopping_cart_24,
-        R.drawable.heart,
+        R.drawable.icons8_heart_50,
         R.drawable.outline_person_4_24
     )
     val bottomItems = listOf(
@@ -59,39 +60,12 @@ fun OrdersScreen(navController: NavController){
             )
         },
         bottomBar = {
-            NavigationBar(
-                containerColor = Color.Black,
-                tonalElevation = 4.dp
-            ) {
-                bottomItems.forEachIndexed { index, screen ->
-                    val isSelected = currentRoute == screen.route
-                    NavigationBarItem(
-                        icon = {
-                            Icon(
-                                painter = painterResource(id = bottomIcons[index]),
-                                contentDescription = screen.route,
-                                tint = if (isSelected) NeonBlue else Color.LightGray,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        },
-                        label = {
-                            Text(
-                                screen.route.substringBefore("/").replaceFirstChar { it.uppercase() },
-                                color = if (isSelected) NeonBlue else Color.LightGray,
-                                fontSize = 12.sp
-                            )
-                        },
-                        selected = isSelected,
-                        onClick = {
-                            navController.navigate(screen.route) {
-                                popUpTo(Screen.HomeScreen.route) { inclusive = false }
-                                launchSingleTop = true
-                            }
-                        },
-                        alwaysShowLabel = true
-                    )
-                }
-            }
+            BottomNavBar(
+                navController = navController,
+                currentRoute = currentRoute,
+                bottomItems = bottomItems,
+                bottomIcons = bottomIcons,
+            )
         }
     ){innerpadding->
         Column(

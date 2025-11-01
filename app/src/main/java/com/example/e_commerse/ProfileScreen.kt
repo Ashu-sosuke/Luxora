@@ -1,4 +1,4 @@
-package com.example.e_commerse.screens
+package com.example.e_commerse
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -15,24 +15,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import com.example.e_commerse.Screen
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.e_commerse.login.AuthViewModel
 
-val MatteBlack = Color(0xFF121212)
 val NeonGreen = Color(0xFF00FF9C)
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    navController: NavController,
-    authViewModel: AuthViewModel
+    navController: NavHostController,
+    authViewModel: AuthViewModel = AuthViewModel() // for preview safety
 ) {
     val context = LocalContext.current
 
+    // Fetch user data once
     LaunchedEffect(Unit) {
         authViewModel.fetchUserData()
     }
@@ -42,55 +45,110 @@ fun ProfileScreen(
     val email by authViewModel.userEmail
     val address by authViewModel.userAddress
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MatteBlack
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(24.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.Start
-        ) {
-            Text(
-                text = "Profile",
-                color = NeonGreen,
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(bottom = 24.dp, top = 12.dp)
-            )
+    val bottomItems = listOf(
+        Screen.HomeScreen,
+        Screen.ExploreScreen,
+        Screen.OrderScreen,
+        Screen.WishlistScreen,
+        Screen.ProfileScreen
+    )
 
-            ProfileCard(icon = Icons.Default.Person, label = "First Name", value = firstName)
-            ProfileCard(icon = Icons.Default.Person, label = "Last Name", value = lastName)
-            ProfileCard(icon = Icons.Default.Email, label = "Email", value = email)
-            ProfileCard(icon = Icons.Default.LocationOn, label = "Address", value = address)
+    val bottomIcons = listOf(
+        R.drawable.baseline_home_24,
+        R.drawable.expolre,
+        R.drawable.outline_shopping_cart_24,
+        R.drawable.icons8_heart_50,
+        R.drawable.outline_person_4_24
+    )
 
-            Spacer(modifier = Modifier.height(40.dp))
+    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
-            Button(
-                onClick = {
-                    authViewModel.logout(context) {
-                        navController.navigate(Screen.LoginScreen.route) {
-                            popUpTo("ProfileScreen") { inclusive = true }
-                        }
-                    }
+    Scaffold(
+        containerColor = MatteWhite,
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Profile",
+                        color = NeonBlue,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp
+                    )
                 },
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .fillMaxWidth()
-                    .height(50.dp),
-                shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = NeonGreen,
-                    contentColor = MatteBlack
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MatteBlack
                 )
-            ) {
-                Text("Logout", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-            }
+            )
+        },
+        bottomBar = {
+            BottomNavBar(
+                navController = navController,
+                currentRoute = currentRoute,
+                bottomItems = bottomItems,
+                bottomIcons = bottomIcons,
+            )
+        }
+    ) { innerPadding ->
+        ProfileContent(
+            modifier = Modifier.padding(innerPadding),
+            firstName = firstName,
+            lastName = lastName,
+            email = email,
+            address = address,
+            authViewModel = authViewModel,
+            navController = navController
+        )
+    }
+}
+
+@Composable
+fun ProfileContent(
+    modifier: Modifier = Modifier,
+    firstName: String,
+    lastName: String,
+    email: String,
+    address: String,
+    authViewModel: AuthViewModel,
+    navController: NavHostController
+) {
+    val context = LocalContext.current
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(24.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start
+    ) {
+        Spacer(modifier = Modifier.height(8.dp))
+
+        ProfileCard(icon = Icons.Default.Person, label = "First Name", value = firstName)
+        ProfileCard(icon = Icons.Default.Person, label = "Last Name", value = lastName)
+        ProfileCard(icon = Icons.Default.Email, label = "Email", value = email)
+        ProfileCard(icon = Icons.Default.LocationOn, label = "Address", value = address)
+
+        Spacer(modifier = Modifier.height(40.dp))
+
+        Button(
+            onClick = {
+                authViewModel.logout(context) {
+                    navController.navigate(Screen.LoginScreen.route) {
+                        popUpTo(Screen.ProfileScreen.route) { inclusive = true }
+                    }
+                }
+            },
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .fillMaxWidth()
+                .height(50.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = NeonGreen,
+                contentColor = MatteBlack
+            )
+        ) {
+            Text("Logout", fontWeight = FontWeight.Bold, fontSize = 16.sp)
         }
     }
 }
@@ -102,20 +160,19 @@ fun ProfileCard(icon: androidx.compose.ui.graphics.vector.ImageVector, label: St
             .fillMaxWidth()
             .padding(vertical = 6.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF1F1F1F)
+            containerColor = LightBlue
         ),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Row(
-            modifier = Modifier
-                .padding(16.dp),
+            modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 imageVector = icon,
                 contentDescription = label,
-                tint = NeonGreen,
+                tint = Color.Blue,
                 modifier = Modifier
                     .size(28.dp)
                     .padding(end = 12.dp)
@@ -123,16 +180,22 @@ fun ProfileCard(icon: androidx.compose.ui.graphics.vector.ImageVector, label: St
             Column {
                 Text(
                     text = label,
-                    color = Color.Gray,
-                    fontSize = 14.sp
+                    color = Color.Black,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = value,
-                    color = Color.White,
+                    text = value.ifEmpty { "Not provided" },
+                    color = Color.Black,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
                 )
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ProfileScreenPreview() {
+    ProfileScreen(navController = rememberNavController())
 }

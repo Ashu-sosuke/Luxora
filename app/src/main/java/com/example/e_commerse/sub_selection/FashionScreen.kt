@@ -24,6 +24,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.e_commerse.BottomNavBar
+import com.example.e_commerse.LightBlue
+import com.example.e_commerse.LightBlueGradient
 import com.example.e_commerse.R
 import com.example.e_commerse.Screen
 import java.net.URLEncoder
@@ -70,59 +73,35 @@ fun FashionScreen(navController: NavController) {
     )
 
     Scaffold(
-        containerColor = MatteBlack,
+
         topBar = {
-            CenterAlignedTopAppBar(
+            TopAppBar(
                 title = {
                     Text(
                         "Fashion",
-                        color = NeonGreen,
+                        color = Color.Black,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 22.sp,
+                        fontSize = 16.sp,
                         textAlign = TextAlign.Center
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = null, tint = NeonGreen)
+                        Icon(Icons.Default.ArrowBack, contentDescription = null, tint = Color.Black)
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.DarkGray
+                    containerColor = LightBlueGradient
                 )
             )
         },
         bottomBar = {
-            NavigationBar(containerColor = Color.Black) {
-                bottomItems.forEachIndexed { index, screen ->
-                    NavigationBarItem(
-                        icon = {
-                            Icon(
-                                painter = painterResource(id = bottomIcons[index]),
-                                contentDescription = screen.route,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        },
-                        label = {
-                            Text(screen.route.substringBefore("/").replaceFirstChar { it.uppercase() })
-                        },
-                        selected = currentRoute == screen.route,
-                        onClick = {
-                            navController.navigate(screen.route) {
-                                popUpTo(Screen.HomeScreen.route) { inclusive = false }
-                                launchSingleTop = true
-                            }
-                        },
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = NeonGreen,
-                            selectedTextColor = NeonGreen,
-                            indicatorColor = Color.DarkGray,
-                            unselectedIconColor = Color.Gray,
-                            unselectedTextColor = Color.Gray
-                        )
-                    )
-                }
-            }
+            BottomNavBar(
+                navController = navController,
+                currentRoute = currentRoute,
+                bottomItems = bottomItems,
+                bottomIcons = bottomIcons
+            )
         }
     ) { innerPadding ->
         Column(
@@ -130,7 +109,7 @@ fun FashionScreen(navController: NavController) {
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
                 .fillMaxSize()
-                .background(MatteBlack)
+                .background(LightBlue)
                 .padding(12.dp)
         ) {
             ItemGridWithTitle("Men's Collection", MensCothes) { item ->
@@ -156,7 +135,7 @@ fun ItemGridWithTitle(
             text = title,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = NeonGreen,
+            color = Color.Black,
             modifier = Modifier.padding(start = 8.dp, bottom = 12.dp)
         )
 
@@ -184,10 +163,10 @@ fun ItemGridWithTitle(
 fun ItemCard(item: cloth, onClick: (cloth) -> Unit, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier
-            .height(220.dp)
+            .height(200.dp)
             .clip(RoundedCornerShape(16.dp)),
         onClick = { onClick(item) },
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1C)),
+        colors = CardDefaults.cardColors(containerColor = Color.LightGray),
         elevation = CardDefaults.cardElevation(8.dp),
     ) {
         Column {
@@ -201,16 +180,16 @@ fun ItemCard(item: cloth, onClick: (cloth) -> Unit, modifier: Modifier = Modifie
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(150.dp)
-                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                    .clip(RoundedCornerShape(16.dp))
             )
 
             Spacer(modifier = Modifier.height(10.dp))
 
             Text(
                 text = item.name,
-                fontWeight = FontWeight.Medium,
+                fontWeight = FontWeight.SemiBold,
                 fontSize = 16.sp,
-                color = NeonGreen,
+                color = Color.Black,
                 modifier = Modifier.padding(horizontal = 12.dp)
             )
         }

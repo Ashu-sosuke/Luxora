@@ -75,7 +75,7 @@ fun CategoryItemView(item: CategoryItem, onClick: () -> Unit) {
             fontSize = 14.sp,
             fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Medium,
-            color = TextBlack,
+            color = Color.Black,
             textAlign = TextAlign.Center,
             maxLines = 2,
             softWrap = true

@@ -1,26 +1,36 @@
 {
   "project_info": {
-    "project_number": "473018962752",
-    "project_id": "e-commerce-c5e7a",
-    "storage_bucket": "e-commerce-c5e7a.firebasestorage.app"
+    "project_number": "510724616563",
+    "project_id": "luxora-447e8",
+    "storage_bucket": "luxora-447e8.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:473018962752:android:2ec0db6bca4644bb21a0a5",
+        "mobilesdk_app_id": "1:510724616563:android:b3a290604d621e00d39506",
         "android_client_info": {
           "package_name": "com.example.e_commerse"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "510724616563-5i0v4dlhdk1huqq3urqo5sgcpbepmtt3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyAdp01L1yO7hvDZFklaO2VNGsu9HMQlc8I"
+          "current_key": "AIzaSyCOFFGHgNvkkXXZ6TRQrBkRj5PQ2kvvGDk"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "510724616563-5i0v4dlhdk1huqq3urqo5sgcpbepmtt3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

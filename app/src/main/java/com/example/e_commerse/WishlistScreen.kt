@@ -1,6 +1,7 @@
 package com.example.e_commerse
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -18,10 +19,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 @Composable
 fun WishlistScreen(navController: NavController) {
     val bottomIcons = listOf(
-        R.drawable.baseline_home_24,
+        R.drawable.outline_home_24,
         R.drawable.expolre,
         R.drawable.outline_shopping_cart_24,
-        R.drawable.heart,
+        R.drawable.icons8_heart_50,
         R.drawable.outline_person_4_24
     )
     val bottomItems = listOf(
@@ -64,7 +65,7 @@ fun WishlistScreen(navController: NavController) {
                 navController = navController,
                 currentRoute = currentRoute,
                 bottomItems = bottomItems,
-                bottomIcons = bottomIcons
+                bottomIcons = bottomIcons,
             )
         }
     ) { innerPadding ->

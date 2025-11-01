@@ -44,12 +44,16 @@ dependencies {
 
     implementation ("androidx.datastore:datastore-preferences:1.0.0")
 
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.35.2-beta")
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
 
     // Firebase modules - no version needed when using BoM
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
+
+    implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("io.coil-kt:coil-compose:2.2.2")
 
     // Jetpack Compose & AndroidX
     implementation("androidx.navigation:navigation-compose:2.7.7")

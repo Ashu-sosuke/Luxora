@@ -13,6 +13,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,15 +27,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExploreScreen(navController: NavController) {
     val bottomIcons = listOf(
-        R.drawable.baseline_home_24,
+        R.drawable.outline_home_24,
         R.drawable.expolre,
         R.drawable.outline_shopping_cart_24,
-        R.drawable.heart,
+        R.drawable.icons8_heart_50,
         R.drawable.outline_person_4_24
     )
     val bottomItems = listOf(
@@ -46,28 +48,38 @@ fun ExploreScreen(navController: NavController) {
     )
     val currentRoute by navController.currentBackStackEntryAsState()
 
+    val systemController = rememberSystemUiController()
+
+    SideEffect {
+        systemController.setSystemBarsColor(
+            color = Color.Transparent,
+            darkIcons = true
+        )
+    }
     Scaffold(
-        containerColor = MatteWhite,
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = "Explore Category",
-                        fontWeight = FontWeight.Bold,
-                        color = NeonBlue,
-                        fontSize = 22.sp
-                    )
-                },
+            TopAppBar(
+                title = {Text(
+                    "Explore ",
+                    fontFamily = FontFamily.SansSerif,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.Black
+                    )},
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = NeonBlue)
-                    }
+                    IconButton(onClick = {
+                        navController.navigate(Screen.ExploreScreen.route)
+                    }) { Icon(
+                        Icons.Default.ArrowBack,
+                        contentDescription = null,
+                        tint = Color.Black
+                    )}
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Black
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = LightBlueGradient
                 )
             )
         },
+        containerColor = Color.Transparent,
         bottomBar = {
             BottomNavBar(
                 navController = navController,
@@ -103,40 +115,54 @@ fun BottomNavBar(
     bottomItems: List<Screen>,
     bottomIcons: List<Int>
 ) {
-    NavigationBar(
-        containerColor = Color.Black,
-        tonalElevation = 4.dp
+    Surface(
+        color = Color(0xFFFFEDF3),
+        tonalElevation = 4.dp,
+        shadowElevation = 8.dp,
+        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp), // rounded top corners
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
     ) {
-        bottomItems.forEachIndexed { index, screen ->
-            val isSelected = currentRoute == screen.route
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        painter = painterResource(id = bottomIcons[index]),
-                        contentDescription = screen.route,
-                        tint = if (isSelected) NeonBlue else Color.LightGray,
-                        modifier = Modifier.size(24.dp)
+        NavigationBar(
+            containerColor = Color.Transparent, // use Surface color
+            tonalElevation = 0.dp
+        ) {
+            bottomItems.forEachIndexed { index, screen ->
+                val isSelected = currentRoute == screen.route
+                NavigationBarItem(
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = bottomIcons[index]),
+                            contentDescription = screen.route,
+                            tint = if (isSelected) NeonBlue else Color.DarkGray,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    },
+                    label = {
+                        Text(
+                            screen.route.substringBefore("/").replaceFirstChar { it.uppercase() },
+                            color = if (isSelected) NeonBlue else Color.DarkGray,
+                            fontSize = 12.sp,
+
+                        )
+                    },
+                    selected = isSelected,
+                    onClick = {
+                        navController.navigate(screen.route) {
+                            popUpTo(Screen.HomeScreen.route) { inclusive = false }
+                            launchSingleTop = true
+                        }
+                    },
+                    alwaysShowLabel = true,
+                    colors = NavigationBarItemDefaults.colors( indicatorColor = Color(0x330095FF)
                     )
-                },
-                label = {
-                    Text(
-                        screen.route.substringBefore("/").replaceFirstChar { it.uppercase() },
-                        color = if (isSelected) NeonBlue else Color.LightGray,
-                        fontSize = 12.sp
-                    )
-                },
-                selected = isSelected,
-                onClick = {
-                    navController.navigate(screen.route) {
-                        popUpTo(Screen.HomeScreen.route) { inclusive = false }
-                        launchSingleTop = true
-                    }
-                },
-                alwaysShowLabel = true
-            )
+                )
+            }
         }
     }
 }
+
 
 @Composable
 fun ECategoryItemView(item: CategoryItem, onClick: () -> Unit) {
@@ -160,7 +186,7 @@ fun ECategoryItemView(item: CategoryItem, onClick: () -> Unit) {
             fontSize = 14.sp,
             fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Medium,
-            color = TextBlack,
+            color = Color.Black,
             textAlign = TextAlign.Center,
             maxLines = 2,
             softWrap = true

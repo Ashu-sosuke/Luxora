@@ -9,7 +9,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.e_commerse.admin.AdminUploadScreen
 import com.example.e_commerse.login.*
-import com.example.e_commerse.screens.*
 import com.example.e_commerse.sub_selection.*
 import java.net.URLDecoder
 
