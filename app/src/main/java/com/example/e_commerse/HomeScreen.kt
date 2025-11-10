@@ -159,7 +159,6 @@ fun HomeContent(navController: NavController) {
                 .padding(top = 16.dp, bottom = 8.dp)
         )
 
-        ProductListScreen()
         Spacer(modifier = Modifier.height(80.dp))
     }
 }

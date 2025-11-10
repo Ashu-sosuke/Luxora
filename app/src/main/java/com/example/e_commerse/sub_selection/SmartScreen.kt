@@ -121,7 +121,6 @@ fun SmartDevice(navController: NavController) {
                 .padding(12.dp)
         ) {
             ItemGridWithTitle("Top Picks", smartDevices){ item ->
-                navController.navigate("product_list/Smart Gadgets/${encodeParam(item.name)}")
             }
         }
     }

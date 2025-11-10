@@ -2,60 +2,49 @@ package com.example.e_commerse.sub_selection
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import com.example.e_commerse.R
-import com.example.e_commerse.Screen
-
-
-data class KitchenProduct(val imgUrl: String, val name: String)
-
-// ✅ Sample product list
-val kitchenProducts = listOf(
-    KitchenProduct("https://i.pinimg.com/1200x/36/60/30/3660305247fbee93032363a7d3c50e22.jpg", "Refrigerator"),
-    KitchenProduct("https://i.pinimg.com/736x/6d/a4/52/6da4520d836af3e46a49d7e3040fa24b.jpg", "Stove"),
-    KitchenProduct("https://i.pinimg.com/736x/29/7d/03/297d03e7da40a818b918e86ead7f8103.jpg", "Masala Set"),
-)
+import com.google.firebase.firestore.FirebaseFirestore
+import com.example.e_commerse.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun KitchenScreen(navController: NavController) {
-    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+    val db = FirebaseFirestore.getInstance()
+    var kitchenProducts by remember { mutableStateOf<List<Product>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
 
-    val bottomItems = listOf(
-        Screen.HomeScreen,
-        Screen.ExploreScreen,
-        Screen.OrderScreen,
-        Screen.WishlistScreen,
-        Screen.ProfileScreen
-    )
+    LaunchedEffect(Unit) {
+        db.collection("products")
+            .whereEqualTo("mainCategory", "Kitchen")
+            .get()
+            .addOnSuccessListener { snapshot ->
+                kitchenProducts = snapshot.documents.mapNotNull { doc ->
+                    doc.toObject(Product::class.java)?.copy(id = doc.id)
+                }
+                isLoading = false
+            }
+            .addOnFailureListener {
+                isLoading = false
+            }
+    }
 
-    val bottomIcons = listOf(
-        R.drawable.baseline_home_24,
-        R.drawable.expolre,
-        R.drawable.outline_shopping_cart_24,
-        R.drawable.heart,
-        R.drawable.outline_person_4_24
-    )
     Scaffold(
         containerColor = MatteBlack,
         topBar = {
@@ -65,97 +54,56 @@ fun KitchenScreen(navController: NavController) {
                         "Kitchen",
                         color = NeonGreen,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 22.sp,
-                        textAlign = TextAlign.Center
+                        fontSize = 22.sp
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate(Screen.HomeScreen.route) }) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = null, tint = NeonGreen)
                     }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Gray
-                )
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Gray)
             )
-        },
-        bottomBar = {
-            NavigationBar(containerColor = Color.Black) {
-                bottomItems.forEachIndexed { index, screen ->
-                    NavigationBarItem(
-                        icon = {
-                            Icon(
-                                painter = painterResource(id = bottomIcons[index]),
-                                contentDescription = screen.route,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        },
-                        label = {
-                            Text(screen.route.substringBefore("/").replaceFirstChar { it.uppercase() })
-                        },
-                        selected = currentRoute == screen.route,
-                        onClick = {
-                            navController.navigate(screen.route) {
-                                popUpTo(Screen.HomeScreen.route) { inclusive = false }
-                                launchSingleTop = true
-                            }
-                        },
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = NeonGreen,
-                            selectedTextColor = NeonGreen,
-                            indicatorColor = Color.DarkGray,
-                            unselectedIconColor = Color.Gray,
-                            unselectedTextColor = Color.Gray
-                        )
-                    )
-                }
-            }
         }
-
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
-                .fillMaxSize()
-                .background(MatteBlack)
-                .padding(12.dp)
-        ) {
-            ItemGridWithTitle("Kitchen Items", kitchenProducts){ item ->
-                navController.navigate("product_list/Kitchen/${encodeParam(item.name)}")
-            }
-        }
-    }
-}
-
-@Composable
-fun ItemGridWithTitle(
-    title: String,
-    items: List<KitchenProduct>,
-    onItemClick: (KitchenProduct) -> Unit = {}
-) {
-    Column {
-        Text(
-            text = title,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            color = NeonGreen,
-            modifier = Modifier.padding(start = 8.dp, bottom = 12.dp)
-        )
-
-        val chunked = items.chunked(2)
-        chunked.forEach { rowItems ->
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 20.dp)
-            ) {
-                for (item in rowItems) {
-                    ItemCard(item = item, onClick = onItemClick, modifier = Modifier.weight(1f))
+        when {
+            isLoading -> {
+                Box(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = NeonGreen)
                 }
-                if (rowItems.size == 1) {
-                    Spacer(modifier = Modifier.weight(1f))
+            }
+
+            kitchenProducts.isEmpty() -> {
+                Box(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("No Kitchen Products Found", color = NeonGreen)
+                }
+            }
+
+            else -> {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .background(MatteBlack)
+                        .padding(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(kitchenProducts) { product ->
+                        KitchenProductCard(product = product) {
+                            navController.navigate("product_detail/${product.id}")
+                        }
+                    }
                 }
             }
         }
@@ -163,22 +111,19 @@ fun ItemGridWithTitle(
 }
 
 @Composable
-fun ItemCard(item: KitchenProduct, onClick: (KitchenProduct) -> Unit, modifier: Modifier = Modifier) {
+fun KitchenProductCard(product: Product, onClick: () -> Unit) {
     Card(
-        modifier = modifier
+        modifier = Modifier
             .height(220.dp)
             .clip(RoundedCornerShape(16.dp)),
-        onClick = { onClick(item) },
+        onClick = onClick,
         colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1C)),
         elevation = CardDefaults.cardElevation(8.dp),
     ) {
         Column {
             AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(item.imgUrl)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = item.name,
+                model = product.images.firstOrNull(),
+                contentDescription = product.name,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -189,10 +134,17 @@ fun ItemCard(item: KitchenProduct, onClick: (KitchenProduct) -> Unit, modifier: 
             Spacer(modifier = Modifier.height(10.dp))
 
             Text(
-                text = item.name,
+                text = product.name,
                 fontWeight = FontWeight.Medium,
                 fontSize = 16.sp,
                 color = NeonGreen,
+                modifier = Modifier.padding(horizontal = 12.dp)
+            )
+
+            Text(
+                text = "₹${product.price}",
+                color = Color.Gray,
+                fontSize = 14.sp,
                 modifier = Modifier.padding(horizontal = 12.dp)
             )
         }

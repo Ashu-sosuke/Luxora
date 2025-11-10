@@ -124,7 +124,6 @@ fun ElectronicScreen(navController: NavController) {
                 .padding(12.dp)
         ) {
             ItemGridWithTitle("Electronic Items", electronic){ item ->
-                navController.navigate("product_list/Electronics/${encodeParam(item.name)}")
             }
         }
     }

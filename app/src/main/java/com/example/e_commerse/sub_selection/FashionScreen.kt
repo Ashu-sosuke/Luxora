@@ -1,6 +1,7 @@
 package com.example.e_commerse.sub_selection
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -9,6 +10,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,8 +33,10 @@ import coil.request.ImageRequest
 import com.example.e_commerse.BottomNavBar
 import com.example.e_commerse.LightBlue
 import com.example.e_commerse.LightBlueGradient
+import com.example.e_commerse.Product
 import com.example.e_commerse.R
 import com.example.e_commerse.Screen
+import com.google.firebase.firestore.FirebaseFirestore
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -54,26 +62,41 @@ val WomensClothes = listOf(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FashionScreen(navController: NavController) {
-    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+    val db = FirebaseFirestore.getInstance()
 
-    val bottomItems = listOf(
-        Screen.HomeScreen,
-        Screen.ExploreScreen,
-        Screen.OrderScreen,
-        Screen.WishlistScreen,
-        Screen.ProfileScreen
-    )
+    var mensProducts by remember { mutableStateOf<List<Product>>(emptyList()) }
+    var womensProducts by remember { mutableStateOf<List<Product>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
 
-    val bottomIcons = listOf(
-        R.drawable.baseline_home_24,
-        R.drawable.expolre,
-        R.drawable.outline_shopping_cart_24,
-        R.drawable.heart,
-        R.drawable.outline_person_4_24
-    )
+    LaunchedEffect(Unit) {
+        // Fetch Men's products
+        db.collection("products")
+            .whereEqualTo("mainCategory", "Fashion")
+            .whereEqualTo("subCategory", "Men")
+            .get()
+            .addOnSuccessListener { snapshot ->
+                mensProducts = snapshot.documents.mapNotNull { doc ->
+                    doc.toObject(Product::class.java)?.copy(id = doc.id)
+                }
+                isLoading = false
+            }
+            .addOnFailureListener { isLoading = false }
+
+        // Fetch Women's products
+        db.collection("products")
+            .whereEqualTo("mainCategory", "Fashion")
+            .whereEqualTo("subCategory", "Women")
+            .get()
+            .addOnSuccessListener { snapshot ->
+                womensProducts = snapshot.documents.mapNotNull { doc ->
+                    doc.toObject(Product::class.java)?.copy(id = doc.id)
+                }
+                isLoading = false
+            }
+            .addOnFailureListener { isLoading = false }
+    }
 
     Scaffold(
-
         topBar = {
             TopAppBar(
                 title = {
@@ -94,107 +117,104 @@ fun FashionScreen(navController: NavController) {
                     containerColor = LightBlueGradient
                 )
             )
-        },
-        bottomBar = {
-            BottomNavBar(
-                navController = navController,
-                currentRoute = currentRoute,
-                bottomItems = bottomItems,
-                bottomIcons = bottomIcons
-            )
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
-                .fillMaxSize()
-                .background(LightBlue)
-                .padding(12.dp)
-        ) {
-            ItemGridWithTitle("Men's Collection", MensCothes) { item ->
-                navController.navigate("product_list/Fashion/${encodeParam(item.name)}")
+        if (isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = NeonGreen)
             }
-            Spacer(modifier = Modifier.height(32.dp))
-            ItemGridWithTitle("Women's Collection", WomensClothes) { item ->
-                navController.navigate("product_list/Fashion/${encodeParam(item.name)}")
+        } else {
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .verticalScroll(rememberScrollState())
+                    .fillMaxSize()
+                    .background(LightBlue)
+                    .padding(12.dp)
+            ) {
+                if (mensProducts.isNotEmpty()) {
+                    Text(
+                        "Men's Collection",
+                        color = NeonGreen,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    ProductGrid(mensProducts) { product ->
+                        navController.navigate("product_detail/${product.id}")
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                if (womensProducts.isNotEmpty()) {
+                    Text(
+                        "Women's Collection",
+                        color = NeonGreen,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    ProductGrid(womensProducts) { product ->
+                        navController.navigate("product_detail/${product.id}")
+                    }
+                }
             }
         }
     }
 }
-
-
 @Composable
-fun ItemGridWithTitle(
-    title: String,
-    clothes: List<cloth>,
-    onItemClick: (cloth) -> Unit = {}
-) {
+fun ProductGrid(products: List<Product>, onItemClick: (Product) -> Unit) {
     Column {
-        Text(
-            text = title,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black,
-            modifier = Modifier.padding(start = 8.dp, bottom = 12.dp)
-        )
-
-        val chunked = clothes.chunked(2)
-        chunked.forEach { rowItems ->
+        for (chunk in products.chunked(2)) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 20.dp)
+                modifier = Modifier.fillMaxWidth()
             ) {
-                for (item in rowItems) {
-                    ItemCard(item = item, onClick = onItemClick, modifier = Modifier.weight(1f))
+                chunk.forEach { product ->
+                    Card(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Color.White)
+                            .clickable { onItemClick(product) }
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.padding(8.dp)
+                        ) {
+                            AsyncImage(
+                                model = product.images.firstOrNull(),
+                                contentDescription = product.name,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(140.dp)
+                                    .clip(RoundedCornerShape(12.dp))
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = product.name,
+                                color = Color.Black,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 14.sp,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
                 }
 
-                if (rowItems.size == 1) {
+                // Fill empty space if odd number of products
+                if (chunk.size == 1) {
                     Spacer(modifier = Modifier.weight(1f))
                 }
             }
+            Spacer(modifier = Modifier.height(12.dp))
         }
     }
 }
-
-@Composable
-fun ItemCard(item: cloth, onClick: (cloth) -> Unit, modifier: Modifier = Modifier) {
-    Card(
-        modifier = modifier
-            .height(200.dp)
-            .clip(RoundedCornerShape(16.dp)),
-        onClick = { onClick(item) },
-        colors = CardDefaults.cardColors(containerColor = Color.LightGray),
-        elevation = CardDefaults.cardElevation(8.dp),
-    ) {
-        Column {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(item.imgUrl)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = item.name,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .clip(RoundedCornerShape(16.dp))
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Text(
-                text = item.name,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 16.sp,
-                color = Color.Black,
-                modifier = Modifier.padding(horizontal = 12.dp)
-            )
-        }
-    }
-}
-
-fun encodeParam(param: String): String =
-    URLEncoder.encode(param, StandardCharsets.UTF_8.toString())

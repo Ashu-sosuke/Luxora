@@ -123,7 +123,6 @@ fun FurnitureScreen(navController: NavController) {
                 .padding(12.dp)
         ) {
             FurnitureGridWithTitle("Furniture", furnitureList){ item ->
-                navController.navigate("product_list/Furniture/${encodeParam(item.name)}")
             }
         }
     }

@@ -10,6 +10,7 @@ import androidx.navigation.navArgument
 import com.example.e_commerse.admin.AdminUploadScreen
 import com.example.e_commerse.login.*
 import com.example.e_commerse.sub_selection.*
+
 import java.net.URLDecoder
 
 @Composable
@@ -21,13 +22,18 @@ fun Navigation() {
         navController = navController,
         startDestination = Screen.SplashScreen.route
     ) {
-        // Auth & Home
+
+        // ----------------------------
+        // 🔹 AUTH SCREENS
+        // ----------------------------
         composable(Screen.SplashScreen.route) { SplashScreen(navController) }
         composable(Screen.LoginScreen.route) { LogInScreen(navController) }
         composable(Screen.SignUpScreen.route) { SignUpPage(navController) }
-        composable(Screen.HomeScreen.route) { HomeScreen(navController) }
 
-        // Bottom Nav Screens
+        // ----------------------------
+        // 🔹 HOME & MAIN SCREENS
+        // ----------------------------
+        composable(Screen.HomeScreen.route) { HomeScreen(navController) }
         composable(Screen.ExploreScreen.route) { ExploreScreen(navController) }
         composable(Screen.OrderScreen.route) { OrdersScreen(navController) }
         composable(Screen.WishlistScreen.route) { WishlistScreen(navController) }
@@ -35,8 +41,9 @@ fun Navigation() {
             ProfileScreen(navController = navController, authViewModel = authViewModel)
         }
 
-
-        // Subcategory Screens
+        // ----------------------------
+        // 🔹 CATEGORY SCREENS
+        // ----------------------------
         composable(Screen.FashionScreen.route) { FashionScreen(navController) }
         composable(Screen.ElectronicScreen.route) { ElectronicScreen(navController) }
         composable(Screen.SportScreen.route) { SportScreen(navController) }
@@ -45,11 +52,9 @@ fun Navigation() {
         composable(Screen.SmartDevice.route) { SmartDevice(navController) }
         composable(Screen.KitchenScreen.route) { KitchenScreen(navController) }
 
-        // Admin
-        composable("admin_screen") { AdminUploadScreen(navController) }
-        composable("admin_login") { AdminLoginScreen(navController) }
-
-        // Product List Screen (subcategories)
+        // ----------------------------
+        // 🔹 PRODUCT LIST SCREEN (Dynamic from Firestore)
+        // ----------------------------
         composable(
             route = "product_list/{mainCategory}/{subCategory}",
             arguments = listOf(
@@ -57,26 +62,53 @@ fun Navigation() {
                 navArgument("subCategory") { type = NavType.StringType }
             )
         ) { backStackEntry ->
-            val mainCategory = URLDecoder.decode(backStackEntry.arguments?.getString("mainCategory") ?: "", "UTF-8")
-            val subCategory = URLDecoder.decode(backStackEntry.arguments?.getString("subCategory") ?: "", "UTF-8")
-            ProductListScreen(mainCategory = mainCategory, subCategory = subCategory, navController = navController)
+            val mainCategory = URLDecoder.decode(
+                backStackEntry.arguments?.getString("mainCategory") ?: "",
+                "UTF-8"
+            )
+            val subCategory = URLDecoder.decode(
+                backStackEntry.arguments?.getString("subCategory") ?: "",
+                "UTF-8"
+            )
+
+            ProductListScreen(
+                mainCategory = mainCategory,
+                subCategory = subCategory,
+                navController = navController
+            )
         }
 
-
-        // Product Detail Screen
+        // ----------------------------
+        // 🔹 PRODUCT DETAIL SCREEN (Dynamic Firestore)
+        // ----------------------------
         composable(
             route = "product_detail/{productId}",
             arguments = listOf(navArgument("productId") { type = NavType.StringType })
         ) { backStackEntry ->
             val encodedId = backStackEntry.arguments?.getString("productId") ?: ""
             val decodedId = URLDecoder.decode(encodedId, "UTF-8")
-            ProductDetailScreen(productId = decodedId, navController = navController)
+
+            ProductDetailScreen(
+                productId = decodedId,
+                navController = navController
+            )
         }
 
-        composable("payment/{productId}") { backStackEntry ->
+        // ----------------------------
+        // 🔹 PAYMENT SCREEN (Optional Future Extension)
+        // ----------------------------
+        composable(
+            route = "payment/{productId}",
+            arguments = listOf(navArgument("productId") { type = NavType.StringType })
+        ) { backStackEntry ->
             val productId = backStackEntry.arguments?.getString("productId") ?: ""
             PaymentScreen(productId = productId, navController = navController)
         }
 
+        // ----------------------------
+        // 🔹 ADMIN SCREENS
+        // ----------------------------
+        composable("admin_login") { AdminLoginScreen(navController) }
+        composable("admin_screen") { AdminUploadScreen(navController) }
     }
 }

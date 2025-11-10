@@ -1,5 +1,7 @@
 package com.example.e_commerse
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -7,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -18,7 +21,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -115,53 +120,59 @@ fun BottomNavBar(
     bottomItems: List<Screen>,
     bottomIcons: List<Int>
 ) {
-    Surface(
-        color = Color(0xFFFFEDF3),
-        tonalElevation = 4.dp,
-        shadowElevation = 8.dp,
-        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp), // rounded top corners
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+            .navigationBarsPadding()
+            .padding(horizontal = 24.dp, vertical = 16.dp),
+        contentAlignment = Alignment.BottomCenter
     ) {
-        NavigationBar(
-            containerColor = Color.Transparent, // use Surface color
-            tonalElevation = 0.dp
+        Row(
+            modifier = Modifier
+                .shadow(12.dp, RoundedCornerShape(50))
+                .background(Color(0xFFF9F8F6), shape = RoundedCornerShape(50))
+                .padding(horizontal = 24.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             bottomItems.forEachIndexed { index, screen ->
                 val isSelected = currentRoute == screen.route
-                NavigationBarItem(
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = bottomIcons[index]),
-                            contentDescription = screen.route,
-                            tint = if (isSelected) NeonBlue else Color.DarkGray,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    },
-                    label = {
-                        Text(
-                            screen.route.substringBefore("/").replaceFirstChar { it.uppercase() },
-                            color = if (isSelected) NeonBlue else Color.DarkGray,
-                            fontSize = 12.sp,
 
-                        )
-                    },
-                    selected = isSelected,
-                    onClick = {
-                        navController.navigate(screen.route) {
-                            popUpTo(Screen.HomeScreen.route) { inclusive = false }
-                            launchSingleTop = true
-                        }
-                    },
-                    alwaysShowLabel = true,
-                    colors = NavigationBarItemDefaults.colors( indicatorColor = Color(0x330095FF)
-                    )
+                val scale by animateFloatAsState(
+                    targetValue = if (isSelected) 1.2f else 1f,
+                    animationSpec = tween(durationMillis = 200),
+                    label = "iconScale"
                 )
+
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(
+                            if (isSelected) Color.LightGray else Color.Transparent
+                        )
+                        .clickable {
+                            navController.navigate(screen.route) {
+                                popUpTo(Screen.HomeScreen.route) { inclusive = false }
+                                launchSingleTop = true
+                            }
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = bottomIcons[index]),
+                        contentDescription = screen.route,
+                        tint = if (isSelected) Color.Black else Color.Black,
+                        modifier = Modifier
+                            .size(22.dp)
+                            .graphicsLayer(scaleX = scale, scaleY = scale)
+                    )
+                }
             }
         }
     }
 }
+
 
 
 @Composable
