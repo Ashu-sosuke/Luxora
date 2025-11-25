@@ -44,7 +44,8 @@ fun Navigation() {
         // ----------------------------
         // 🔹 CATEGORY SCREENS
         // ----------------------------
-        composable(Screen.FashionScreen.route) { FashionScreen(navController) }
+        composable(Screen.MenFashionScreen.route) { MenFashionScreen(navController) }
+        composable(Screen.WomenFashionScreen.route) { WomenFashionScreen(navController) }
         composable(Screen.ElectronicScreen.route) { ElectronicScreen(navController) }
         composable(Screen.SportScreen.route) { SportScreen(navController) }
         composable(Screen.FurnitureScreen.route) { FurnitureScreen(navController) }

@@ -2,6 +2,7 @@ package com.example.e_commerse
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -15,14 +16,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.e_commerse.recently_viewed.ProductDatabase
+import com.example.e_commerse.recently_viewed.RVRepo
+import com.example.e_commerse.recently_viewed.RVScreen
+import com.example.e_commerse.recently_viewed.RVViewModelFactory
+import com.example.e_commerse.recently_viewed.RvViewmodel
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -34,11 +42,11 @@ val SoftGray = Color(0xFFF9F9F9)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) {
+fun HomeScreen(navController: NavHostController) {
 
     val systemController = rememberSystemUiController()
 
-    // Make system bars transparent
+    // Transparent system bars
     SideEffect {
         systemController.setSystemBarsColor(
             color = Color.Transparent,
@@ -46,59 +54,67 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
         )
     }
 
-    val bottomItems = listOf(
-        Screen.HomeScreen,
-        Screen.ExploreScreen,
-        Screen.OrderScreen,
-        Screen.WishlistScreen,
-        Screen.ProfileScreen
-    )
+    val context = LocalContext.current
+    val db = remember { ProductDatabase.getDatabase(context) }
+    val repo = remember { RVRepo(db.productDao()) }
+    val rvViewmodel: RvViewmodel = viewModel(factory = RVViewModelFactory(repo))
 
-    val bottomIcons = listOf(
-        R.drawable.outline_home_24,
-        R.drawable.expolre,
-        R.drawable.outline_shopping_cart_24,
-        R.drawable.icons8_heart_50,
-        R.drawable.outline_person_4_24
-    )
-
-    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+    // Load recently viewed once
+    LaunchedEffect(Unit) {
+        rvViewmodel.loadRecentlyVisited()
+    }
 
     Scaffold(
         containerColor = Color.Transparent,
         bottomBar = {
             BottomNavBar(
                 navController = navController,
-                currentRoute = currentRoute,
-                bottomItems = bottomItems,
-                bottomIcons = bottomIcons
+                currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route,
+                bottomItems = listOf(
+                    Screen.HomeScreen,
+                    Screen.ExploreScreen,
+                    Screen.OrderScreen,
+                    Screen.WishlistScreen,
+                    Screen.ProfileScreen
+                ),
+                bottomIcons = listOf(
+                    R.drawable.outline_home_24,
+                    R.drawable.expolre,
+                    R.drawable.outline_shopping_cart_24,
+                    R.drawable.icons8_heart_50,
+                    R.drawable.outline_person_4_24
+                )
             )
         }
     ) { innerPadding ->
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    // ✨ Beautiful vertical gradient
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            Color(0xFFE3F2FD), // soft light blue top
-                            Color(0xFFFFFFFF), // white middle
-                            Color(0xFFB3E5FC)  // gentle blue bottom
+                            Color(0xFFE3F2FD),
+                            Color.White,
+                            Color(0xFFB3E5FC)
                         )
                     )
                 )
                 .padding(innerPadding)
         ) {
-            HomeContent(navController)
+            HomeContent(
+                navController = navController,
+                rvViewmodel = rvViewmodel
+            )
         }
     }
 }
 
-// 🔹 Home content with 3-column category grid
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun HomeContent(navController: NavController) {
+fun HomeContent(
+    navController: NavController,
+    rvViewmodel: RvViewmodel
+) {
     val scrollState = rememberScrollState()
 
     Column(
@@ -106,60 +122,36 @@ fun HomeContent(navController: NavController) {
             .fillMaxSize()
             .verticalScroll(scrollState)
             .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.Center
     ) {
 
-        // 🔍 Search Bar
+        SearchBar()
+        ImageSlider()
 
-            SearchBar()
+        Spacer(Modifier.height(8.dp))
 
-            // 🖼 Image Slider
-            ImageSlider()
+        CategoriesSection(categoryItems = categoryItems, navController = navController)
 
-        // 🏷 Categories
-        Text(
-            text = "Categories",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = NeonBlue,
-            textAlign = TextAlign.Start,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp, bottom = 8.dp)
-        )
+        Spacer(Modifier.height(16.dp))
 
-        FlowRow(
-            mainAxisSpacing = 16.dp,
-            crossAxisSpacing = 16.dp,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            categoryItems.forEach { item ->
-                Box(
-                    modifier = Modifier
-                        .weight(1f, fill = false)
-                        .width(100.dp)
-                ) {
-                    CategoryItemView(item) {
-                        navigateToCategory(navController, item.label)
-                    }
-                }
-            }
-        }
-
-        // 🛒 Top Picks
         Text(
             text = "Top Picks",
             fontSize = 20.sp,
             fontWeight = FontWeight.SemiBold,
             color = NeonBlue,
-            textAlign = TextAlign.Start,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp, bottom = 8.dp)
+            modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(80.dp))
+
+
+        Spacer(Modifier.height(32.dp))
+
+        RVScreen(
+            navController = navController,
+            viewmodel = rvViewmodel
+        )
+
+        Spacer(Modifier.height(80.dp))
     }
 }
 

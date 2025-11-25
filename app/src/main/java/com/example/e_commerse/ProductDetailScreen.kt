@@ -19,29 +19,50 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.google.firebase.firestore.FirebaseFirestore
-import com.example.e_commerse.MatteBlack
-import com.example.e_commerse.NeonGreen
-import com.example.e_commerse.Product
+import com.example.e_commerse.recently_viewed.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductDetailScreen(productId: String, navController: NavController) {
+fun ProductDetailScreen(
+    productId: String,
+    navController: NavController
+) {
     val db = FirebaseFirestore.getInstance()
+
+    // ➜ Inject Recently Viewed system
+    val context = navController.context
+    val productDao = remember { ProductDatabase.getDatabase(context).productDao() }
+    val repo = remember { RVRepo(productDao) }
+    val rvViewmodel: RvViewmodel = androidx.lifecycle.viewmodel.compose.viewModel(
+        factory = RVViewModelFactory(repo)
+    )
+
     var product by remember { mutableStateOf<Product?>(null) }
     var isLoading by remember { mutableStateOf(true) }
 
-    // ✅ Real-time listener for product details
+    // 🔥 Load single product + save to recently viewed
     LaunchedEffect(productId) {
         db.collection("products").document(productId)
-            .addSnapshotListener { snapshot, error ->
-                if (error != null) {
-                    error.printStackTrace()
-                    return@addSnapshotListener
+            .get()
+            .addOnSuccessListener { snapshot ->
+                val loaded = snapshot.toObject(Product::class.java)?.copy(id = snapshot.id)
+                product = loaded
+                isLoading = false
+
+                // ➜ Save to recently viewed
+                loaded?.let {
+                    rvViewmodel.saveRecentlyViewed(
+                        ProductEntity(
+                            id = it.id,
+                            name = it.name,
+                            price = it.price,
+                            imageUrl = it.images.firstOrNull() ?: ""
+                        )
+                    )
                 }
-                if (snapshot != null && snapshot.exists()) {
-                    product = snapshot.toObject(Product::class.java)?.copy(id = snapshot.id)
-                    isLoading = false
-                }
+            }
+            .addOnFailureListener {
+                isLoading = false
             }
     }
 
@@ -68,12 +89,11 @@ fun ProductDetailScreen(productId: String, navController: NavController) {
             )
         }
     ) { padding ->
+
         when {
             isLoading -> {
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding),
+                    modifier = Modifier.fillMaxSize().padding(padding),
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator(color = NeonGreen)
@@ -82,9 +102,7 @@ fun ProductDetailScreen(productId: String, navController: NavController) {
 
             product == null -> {
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding),
+                    modifier = Modifier.fillMaxSize().padding(padding),
                     contentAlignment = Alignment.Center
                 ) {
                     Text("Product not found", color = NeonGreen)
@@ -102,7 +120,7 @@ fun ProductDetailScreen(productId: String, navController: NavController) {
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // 🔹 Show first image
+
                     if (p.images.isNotEmpty()) {
                         AsyncImage(
                             model = p.images.first(),
@@ -116,8 +134,10 @@ fun ProductDetailScreen(productId: String, navController: NavController) {
 
                     Text(p.name, color = NeonGreen, fontSize = 22.sp, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(8.dp))
+
                     Text("₹${p.price}", color = Color.LightGray, fontSize = 18.sp)
                     Spacer(modifier = Modifier.height(8.dp))
+
                     Text("Stock: ${p.stock}", color = Color.Gray, fontSize = 14.sp)
                     Spacer(modifier = Modifier.height(16.dp))
 

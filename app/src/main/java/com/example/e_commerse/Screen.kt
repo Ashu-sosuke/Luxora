@@ -17,7 +17,8 @@ sealed class Screen(val route: String) {
     object CategoryScreen : Screen("category")
 
     // Subcategories
-    object FashionScreen : Screen("fashion")
+    object MenFashionScreen : Screen("fashion")
+    object WomenFashionScreen: Screen("womenfasion")
     object ElectronicScreen : Screen("electronics")
     object SportScreen : Screen("sport")
     object FurnitureScreen : Screen("furniture")

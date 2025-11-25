@@ -2,7 +2,12 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+
+    // Google Services
     id("com.google.gms.google-services")
+
+    // KSP (version comes from libs.versions.toml)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -28,13 +33,16 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
+
     buildFeatures {
         compose = true
     }
@@ -42,40 +50,51 @@ android {
 
 dependencies {
 
-    implementation ("androidx.datastore:datastore-preferences:1.0.0")
+    // ------------------------------
+    // ROOM (Correct, no duplicates)
+    // ------------------------------
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
 
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.35.2-beta")
+    // DataStore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    // ------------------------------
+    // Firebase via BOM
+    // ------------------------------
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
-
-    // Firebase modules - no version needed when using BoM
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
 
-    implementation("com.google.firebase:firebase-firestore-ktx")
-    implementation("io.coil-kt:coil-compose:2.2.2")
-
-    // Jetpack Compose & AndroidX
+    // ------------------------------
+    // Jetpack Compose + Navigation
+    // ------------------------------
     implementation("androidx.navigation:navigation-compose:2.7.7")
-    implementation("io.coil-kt:coil-compose:2.5.0")
-    implementation("androidx.compose.foundation:foundation:1.6.1")
-    implementation("com.google.accompanist:accompanist-flowlayout:0.33.2-alpha")
-    implementation("androidx.compose.material3:material3:1.2.1")
 
-    // Core AndroidX with Compose BOM
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
+    // Compose BOM
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.androidx.navigation.runtime.android)
-    implementation(libs.play.services.analytics.impl)
-    implementation(libs.androidx.room.runtime.android)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation("androidx.compose.foundation:foundation:1.6.1")
 
+    // ------------------------------
+    // Coil (only latest, no duplicates)
+    // ------------------------------
+    implementation("io.coil-kt:coil-compose:2.5.0")
+
+    // Accompanist
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.35.2-beta")
+    implementation("com.google.accompanist:accompanist-flowlayout:0.33.2-alpha")
+
+    // ------------------------------
     // Testing
+    // ------------------------------
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
