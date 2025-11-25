@@ -1,5 +1,6 @@
 package com.example.e_commerse.recently_viewed
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
@@ -62,7 +63,7 @@ fun RVScreen(
                 RvProductCard(
                     product = product,
                     onClick = {
-                        navController.navigate("product/${product.id}")
+                        navController.navigate("product_detail/${Uri.encode(product.id)}")
                     }
                 )
             }

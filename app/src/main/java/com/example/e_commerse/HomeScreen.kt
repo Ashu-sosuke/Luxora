@@ -134,14 +134,6 @@ fun HomeContent(
 
         Spacer(Modifier.height(16.dp))
 
-        Text(
-            text = "Top Picks",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = NeonBlue,
-            modifier = Modifier.fillMaxWidth()
-        )
-
 
 
         Spacer(Modifier.height(32.dp))
