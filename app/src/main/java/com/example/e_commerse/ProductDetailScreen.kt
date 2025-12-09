@@ -2,16 +2,19 @@ package com.example.e_commerse
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -20,8 +23,9 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.google.firebase.firestore.FirebaseFirestore
 import com.example.e_commerse.recently_viewed.*
+import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ProductDetailScreen(
     productId: String,
@@ -29,7 +33,6 @@ fun ProductDetailScreen(
 ) {
     val db = FirebaseFirestore.getInstance()
 
-    // ➜ Inject Recently Viewed system
     val context = navController.context
     val productDao = remember { ProductDatabase.getDatabase(context).productDao() }
     val repo = remember { RVRepo(productDao) }
@@ -40,7 +43,6 @@ fun ProductDetailScreen(
     var product by remember { mutableStateOf<Product?>(null) }
     var isLoading by remember { mutableStateOf(true) }
 
-    // 🔥 Load single product + save to recently viewed
     LaunchedEffect(productId) {
         db.collection("products").document(productId)
             .get()
@@ -49,14 +51,13 @@ fun ProductDetailScreen(
                 product = loaded
                 isLoading = false
 
-                // ➜ Save to recently viewed
-                loaded?.let {
+                if (loaded != null) {
                     rvViewmodel.saveRecentlyViewed(
                         ProductEntity(
-                            id = it.id,
-                            name = it.name,
-                            price = it.price,
-                            imageUrl = it.images.firstOrNull() ?: ""
+                            id = loaded.id,
+                            name = loaded.name,
+                            price = loaded.price,
+                            imageUrl = loaded.images.firstOrNull() ?: ""
                         )
                     )
                 }
@@ -67,27 +68,12 @@ fun ProductDetailScreen(
     }
 
     Scaffold(
-        containerColor = MatteBlack,
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = product?.name ?: "Product Details",
-                        color = NeonGreen,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 22.sp
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = null, tint = NeonGreen)
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color(0xFF1A1A1A)
-                )
-            )
-        }
+        bottomBar = {
+            if (product != null) {
+                BottomActionBar(onCart = {}, onWish = {})
+            }
+        },
+        containerColor = Color(0xFFF9F8F6)
     ) { padding ->
 
         when {
@@ -95,75 +81,144 @@ fun ProductDetailScreen(
                 Box(
                     modifier = Modifier.fillMaxSize().padding(padding),
                     contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(color = NeonGreen)
-                }
+                ) { CircularProgressIndicator(color = Color.Black) }
             }
 
             product == null -> {
                 Box(
                     modifier = Modifier.fillMaxSize().padding(padding),
                     contentAlignment = Alignment.Center
-                ) {
-                    Text("Product not found", color = NeonGreen)
-                }
+                ) { Text("Product not found", color = Color.Black) }
             }
 
             else -> {
                 val p = product!!
+                val pagerState = rememberPagerState { p.images.size }
+
+                // ---------- AUTO-SCROLL EVERY 3 SECONDS ----------
+                LaunchedEffect(Unit) {
+                    while (true) {
+                        delay(3000)
+                        val next = (pagerState.currentPage + 1) % p.images.size
+                        pagerState.animateScrollToPage(next)
+                    }
+                }
+
                 Column(
                     modifier = Modifier
                         .padding(padding)
                         .verticalScroll(rememberScrollState())
-                        .background(MatteBlack)
                         .fillMaxSize()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .padding(16.dp)      // <--- Padding everywhere
                 ) {
 
-                    if (p.images.isNotEmpty()) {
+                    // ---------- IMAGE SLIDER ----------
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(320.dp)
+                    ) { index ->
                         AsyncImage(
-                            model = p.images.first(),
-                            contentDescription = p.name,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(280.dp)
+                            model = p.images[index],
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize()
                         )
-                        Spacer(modifier = Modifier.height(10.dp))
                     }
 
-                    Text(p.name, color = NeonGreen, fontSize = 22.sp, fontWeight = FontWeight.Bold)
-                    Spacer(modifier = Modifier.height(8.dp))
+                    // ---------- DOT INDICATORS ----------
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        repeat(p.images.size) { index ->
+                            val isSelected = pagerState.currentPage == index
+                            Box(
+                                modifier = Modifier
+                                    .size(if (isSelected) 10.dp else 7.dp)
+                                    .padding(3.dp)
+                                    .clip(CircleShape)
+                                    .background(if (isSelected) Color.Black else Color.Gray)
+                            )
+                        }
+                    }
 
-                    Text("₹${p.price}", color = Color.LightGray, fontSize = 18.sp)
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(Modifier.height(20.dp))
 
-                    Text("Stock: ${p.stock}", color = Color.Gray, fontSize = 14.sp)
-                    Spacer(modifier = Modifier.height(16.dp))
+                    // ---------- NAME ----------
+                    Text(
+                        text = p.name,
+                        fontSize = 22.sp,
+                        color = Color.Black
+                    )
 
+                    Spacer(Modifier.height(8.dp))
+
+                    // ---------- PRICE + RATING ----------
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "₹${p.price}",
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Column(horizontalAlignment = Alignment.End) {
+                            Text("⭐ 4.6", fontSize = 16.sp, color = Color.Black)
+                            Text("(1,248 reviews)", fontSize = 13.sp, color = Color.Gray)
+                        }
+                    }
+
+                    Spacer(Modifier.height(20.dp))
+
+                    // ---------- DESCRIPTION ----------
                     p.description?.let {
                         Text(
                             text = it,
-                            color = Color.White,
-                            fontSize = 15.sp,
-                            lineHeight = 20.sp
+                            fontSize = 16.sp,
+                            lineHeight = 22.sp,
+                            color = Color.Black
                         )
-                        Spacer(modifier = Modifier.height(20.dp))
                     }
 
-                    if (p.affiliateLink.isNotEmpty()) {
-                        Button(
-                            onClick = {
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(p.affiliateLink))
-                                navController.context.startActivity(intent)
-                            },
-                            colors = ButtonDefaults.buttonColors(containerColor = NeonGreen)
-                        ) {
-                            Text("Buy Now", color = Color.Black, fontWeight = FontWeight.Bold)
-                        }
-                    }
+                    Spacer(Modifier.height(80.dp))
                 }
             }
         }
+    }
+}
+
+
+
+// =============================================================
+// FIXED BOTTOM BAR — NOT SCROLLABLE
+// =============================================================
+@Composable
+fun BottomActionBar(onCart: () -> Unit, onWish: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White)
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+
+        Button(
+            onClick = onWish,
+            modifier = Modifier.weight(1f).height(50.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE0E0E0))
+        ) { Text("Wishlist", color = Color.Black) }
+
+        Spacer(Modifier.width(12.dp))
+
+        Button(
+            onClick = onCart,
+            modifier = Modifier.weight(1f).height(50.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
+        ) { Text("Add to Cart", color = Color.White) }
     }
 }

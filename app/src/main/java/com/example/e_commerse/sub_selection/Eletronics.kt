@@ -9,6 +9,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -23,25 +29,22 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.e_commerse.BottomNavBar
+import com.example.e_commerse.Product
 import com.example.e_commerse.R
 import com.example.e_commerse.Screen
+import com.google.firebase.firestore.FirebaseFirestore
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 
-data class Electronic(val imgUrl: String, val name: String)
-
-val electronic = listOf(
-    Electronic("https://i.pinimg.com/736x/db/1f/e2/db1fe2a55af18c48840879f755de0736.jpg", "Laptop"),
-    Electronic("https://i.pinimg.com/736x/5b/db/b2/5bdbb23f7585a52ea101ae90f3001300.jpg", "Mobile"),
-    Electronic("https://i.pinimg.com/736x/7e/1b/34/7e1b349b736c188c9170b31e01c46ad6.jpg", "Mouse"),
-    Electronic("https://i.pinimg.com/1200x/6b/1d/7c/6b1d7c691358dfe5a0807bc60f0ed2cf.jpg", "Keyboard")
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ElectronicScreen(navController: NavController) {
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+
+    val db = FirebaseFirestore.getInstance()
 
     val bottomItems = listOf(
         Screen.HomeScreen,
@@ -59,145 +62,83 @@ fun ElectronicScreen(navController: NavController) {
         R.drawable.outline_person_4_24
     )
 
+    var electronicProducts by remember { mutableStateOf<List<Product>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        db.collection("products")
+            .whereEqualTo("mainCategory", "Electronics")
+            .get()
+            .addOnSuccessListener { snapshot ->
+                electronicProducts = snapshot.documents.mapNotNull { doc ->
+                    doc.toObject(Product::class.java)?.copy(id = doc.id)
+                }
+                isLoading = false
+            }
+            .addOnFailureListener { isLoading = false }
+    }
+
     Scaffold(
-        containerColor = MatteBlack,
         topBar = {
-            CenterAlignedTopAppBar(
+            TopAppBar(
                 title = {
                     Text(
                         "Electronics",
-                        color = NeonGreen,
+                        color = Color.White,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 22.sp,
-                        textAlign = TextAlign.Center
+                        fontSize = 18.sp
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = NeonGreen)
+                        Icon(Icons.Default.ArrowBack, contentDescription = null, tint = Color.White)
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Black
+                    containerColor = Color(0xFF854836)
                 )
             )
         },
         bottomBar = {
-            NavigationBar(containerColor = Color.Black) {
-                bottomItems.forEachIndexed { index, screen ->
-                    NavigationBarItem(
-                        icon = {
-                            Icon(
-                                painter = painterResource(id = bottomIcons[index]),
-                                contentDescription = screen.route,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        },
-                        label = {
-                            Text(screen.route.substringBefore("/").replaceFirstChar { it.uppercase() })
-                        },
-                        selected = currentRoute == screen.route,
-                        onClick = {
-                            navController.navigate(screen.route) {
-                                popUpTo(Screen.HomeScreen.route) { inclusive = false }
-                                launchSingleTop = true
-                            }
-                        },
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = NeonGreen,
-                            selectedTextColor = NeonGreen,
-                            indicatorColor = Color.DarkGray,
-                            unselectedIconColor = Color.Gray,
-                            unselectedTextColor = Color.Gray
-                        )
-                    )
-                }
-            }
-        }
+            BottomNavBar(
+                navController = navController,
+                currentRoute = currentRoute,
+                bottomItems = bottomItems,
+                bottomIcons = bottomIcons,
+                backgroundColor = Color(0xFFFFF2D7)
+            )
+        },
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
-                .fillMaxSize()
-                .background(MatteBlack)
-                .padding(12.dp)
-        ) {
-            ItemGridWithTitle("Electronic Items", electronic){ item ->
-            }
-        }
-    }
-}
 
-@Composable
-fun ItemGridWithTitle(
-    title: String,
-    items: List<Electronic>,
-    onItemClick: (Electronic) -> Unit = {}
-) {
-    Column {
-        Text(
-            text = title,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            color = NeonGreen,
-            modifier = Modifier.padding(start = 8.dp, bottom = 12.dp)
-        )
-
-        val chunked = items.chunked(2)
-        chunked.forEach { rowItems ->
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+        if (isLoading) {
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 20.dp)
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                contentAlignment = Alignment.Center
             ) {
-                for (item in rowItems) {
-                    ItemCard(item = item, onClick = onItemClick, modifier = Modifier.weight(1f))
-                }
+                CircularProgressIndicator(color = Color(0xFF00FF7F)) // Neon green accent
+            }
+        } else {
+            Box(
+                Modifier
+                    .background(Color(0xFFF9F8F6))
+                    .fillMaxSize()
+            ) {
 
-                if (rowItems.size == 1) {
-                    Spacer(modifier = Modifier.weight(1f))
+                if (electronicProducts.isNotEmpty()) {
+
+                    Column(Modifier.padding(innerPadding)) {
+
+                        ProductGrid(
+                            products = electronicProducts,
+                            onItemClick = { product ->
+                                navController.navigate("product_detail/${product.id}")
+                            }
+                        )
+                    }
                 }
             }
         }
     }
 }
-
-@Composable
-fun ItemCard(item: Electronic, onClick: (Electronic) -> Unit, modifier: Modifier = Modifier) {
-    Card(
-        modifier = modifier
-            .height(220.dp)
-            .clip(RoundedCornerShape(16.dp)),
-        onClick = { onClick(item) },
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1C)),
-        elevation = CardDefaults.cardElevation(8.dp),
-    ) {
-        Column {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(item.imgUrl)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = item.name,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Text(
-                text = item.name,
-                fontWeight = FontWeight.Medium,
-                fontSize = 16.sp,
-                color = NeonGreen,
-                modifier = Modifier.padding(horizontal = 12.dp)
-            )
-        }
-    }
-}
-

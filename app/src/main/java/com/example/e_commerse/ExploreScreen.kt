@@ -68,7 +68,7 @@ fun ExploreScreen(navController: NavController) {
                     "Explore ",
                     fontFamily = FontFamily.SansSerif,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color.Black
+                    color = Color.White
                     )},
                 navigationIcon = {
                     IconButton(onClick = {
@@ -76,11 +76,11 @@ fun ExploreScreen(navController: NavController) {
                     }) { Icon(
                         Icons.Default.ArrowBack,
                         contentDescription = null,
-                        tint = Color.Black
+                        tint = Color.White
                     )}
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = LightBlueGradient
+                    containerColor = Color(0xFF854836)
                 )
             )
         },
@@ -118,7 +118,8 @@ fun BottomNavBar(
     navController: NavController,
     currentRoute: String?,
     bottomItems: List<Screen>,
-    bottomIcons: List<Int>
+    bottomIcons: List<Int>,
+    backgroundColor: Color = Color(0xFFF9F8F6)
 ) {
     Box(
         modifier = Modifier
@@ -130,7 +131,7 @@ fun BottomNavBar(
         Row(
             modifier = Modifier
                 .shadow(12.dp, RoundedCornerShape(50))
-                .background(Color(0xFFF9F8F6), shape = RoundedCornerShape(50))
+                .background(backgroundColor, shape = RoundedCornerShape(50))
                 .padding(horizontal = 24.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -181,7 +182,7 @@ fun ECategoryItemView(item: CategoryItem, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(LightBlue)
+            .background(Color(0xFFBCA88D))
             .clickable(onClick = onClick)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally

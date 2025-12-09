@@ -47,7 +47,6 @@ val categoryItems = listOf(
 )
 
 
-// 🔹 Category Card (Main item)
 @Composable
 fun CategoryItemView(item: CategoryItem, onClick: () -> Unit) {
     Column(
@@ -55,24 +54,25 @@ fun CategoryItemView(item: CategoryItem, onClick: () -> Unit) {
             .width(110.dp)
             .height(140.dp)
             .clip(RoundedCornerShape(20.dp))
-            .background(LightBlue)
+            .background(Color(0xFFA67B5B))
             .clickable(onClick = onClick)
-            .padding(8.dp),
+            .padding(8.dp)
+            .size(150.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
             painter = painterResource(id = item.icon),
             contentDescription = item.label,
-            modifier = Modifier.size(70.dp)
+            modifier = Modifier.size(90.dp)
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = item.label,
-            fontSize = 14.sp,
-            fontFamily = FontFamily.SansSerif,
+            fontSize = 18.sp,
+            fontFamily = FontFamily.Default,
             fontWeight = FontWeight.Medium,
-            color = Color.Black,
+            color = Color.White,
             textAlign = TextAlign.Center,
             maxLines = 2
         )
@@ -101,7 +101,7 @@ fun CategoriesSection(
     categoryItems: List<CategoryItem>,
     navController: NavController
 ) {
-    val maxVisible = 2
+    val maxVisible = 3
     val visibleItems = categoryItems.take(maxVisible)
     val overflowItems = categoryItems.drop(maxVisible)
 
@@ -111,9 +111,9 @@ fun CategoriesSection(
 
         Text(
             text = "Categories",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = NeonBlue,
+            fontSize = 25.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp, bottom = 8.dp)
@@ -174,14 +174,14 @@ fun CategoryMoreButton(onClick: () -> Unit) {
         modifier = Modifier
             .size(100.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(Color(0xFFE7F1FF))
+            .background(Color(0xFFA67B5B))
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = "More >>",
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF0066CC)
+            color = Color.White
         )
     }
 }

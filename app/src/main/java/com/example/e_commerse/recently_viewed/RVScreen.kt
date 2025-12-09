@@ -28,7 +28,9 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontFamily
 import coil.compose.AsyncImage
+import com.example.e_commerse.LightBlue
 
 @Composable
 fun RVScreen(
@@ -48,10 +50,10 @@ fun RVScreen(
     val recentProducts = viewmodel.recentlyVisited
 
     Text(
-        text = "Top Picks (Recently Viewed)",
+        text = "Recently Viewed",
         fontWeight = FontWeight.Bold,
-        fontSize = 20.sp,
-        color = NeonBlue,
+        fontSize = 25.sp,
+        color = Color.Black,
         modifier = Modifier.padding(16.dp)
     )
 
@@ -69,8 +71,6 @@ fun RVScreen(
             }
         })
     }
-
-    Spacer(modifier = Modifier.height(8.dp))
 }
 
 @Composable
@@ -92,7 +92,6 @@ fun RvProductCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(12.dp)
         ) {
-
             AsyncImage(
                 model = product.images.firstOrNull(),
                 contentDescription = product.name,
@@ -106,9 +105,10 @@ fun RvProductCard(
 
             Text(
                 text = product.name,
-                fontSize = 14.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = Color.Black,
+                fontFamily = FontFamily.Default,
                 maxLines = 2
             )
 
@@ -118,7 +118,7 @@ fun RvProductCard(
                 text = "₹${product.price}",
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
-                color = NeonBlue
+                color = Color.Black
             )
         }
     }

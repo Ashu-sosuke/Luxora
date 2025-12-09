@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -83,7 +84,8 @@ fun HomeScreen(navController: NavHostController) {
                     R.drawable.outline_shopping_cart_24,
                     R.drawable.icons8_heart_50,
                     R.drawable.outline_person_4_24
-                )
+                ),
+                backgroundColor = Color(0xFFFFF2D7)
             )
         }
     ) { innerPadding ->
@@ -94,9 +96,8 @@ fun HomeScreen(navController: NavHostController) {
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            Color(0xFFE3F2FD),
-                            Color.White,
-                            Color(0xFFB3E5FC)
+                            Color(0xFFFFEAC5),
+                            Color(0xFFF8F4E1),
                         )
                     )
                 )
@@ -128,15 +129,24 @@ fun HomeContent(
         SearchBar()
         ImageSlider()
 
+        HorizontalDivider(
+            modifier = Modifier.padding(vertical = 10.dp),
+            thickness = 1.dp,
+            color = Color(0xFFB08968).copy(alpha = 0.5f)
+        )
+
         Spacer(Modifier.height(8.dp))
 
         CategoriesSection(categoryItems = categoryItems, navController = navController)
 
         Spacer(Modifier.height(16.dp))
 
+        HorizontalDivider(
+            modifier = Modifier.padding(vertical = 10.dp),
+            thickness = 1.dp,
+            color = Color(0xFFB08968).copy(alpha = 0.5f)
+        )
 
-
-        Spacer(Modifier.height(32.dp))
 
         RVScreen(
             navController = navController,
@@ -204,3 +214,5 @@ fun SearchBar() {
         }
     }
 }
+
+

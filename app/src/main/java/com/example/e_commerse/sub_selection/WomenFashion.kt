@@ -47,6 +47,7 @@ import coil.compose.AsyncImage
 import com.example.e_commerse.BottomNavBar
 import com.example.e_commerse.LightBlue
 import com.example.e_commerse.LightBlueGradient
+import com.example.e_commerse.NeonGreen
 import com.example.e_commerse.Product
 import com.example.e_commerse.R
 import com.example.e_commerse.Screen
@@ -101,20 +102,20 @@ fun WomenFashionScreen(navController: NavController) {
             TopAppBar(
                 title = {
                     Text(
-                        "Fashion",
-                        color = Color.Black,
+                        "Women's Fashion",
+                        color = Color.White,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
+                        fontSize = 28.sp,
                         textAlign = TextAlign.Center
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = null, tint = Color.Black)
+                        Icon(Icons.Default.ArrowBack, contentDescription = null, tint = Color.White)
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = LightBlueGradient
+                    containerColor = Color(0xFF854836)
                 )
             )
         },
@@ -123,7 +124,8 @@ fun WomenFashionScreen(navController: NavController) {
                 navController = navController,
                 currentRoute = currentRoute,
                 bottomItems = bottomItems,
-                bottomIcons = bottomIcons
+                bottomIcons = bottomIcons,
+                backgroundColor = Color(0xFFFFF2D7)
             )
         }
     ) { innerPadding ->
@@ -139,7 +141,7 @@ fun WomenFashionScreen(navController: NavController) {
         } else {
             Box(
                 Modifier
-                    .background(LightBlue)
+                    .background(Color(0xFFF9F8F6))
                     .fillMaxSize()
             ){
                 if (womensProducts.isNotEmpty()){
@@ -150,9 +152,13 @@ fun WomenFashionScreen(navController: NavController) {
                         fontWeight = FontWeight.Bold,
                     )
 
-                    ProductGrid(womensProducts) {product ->
-                        navController.navigate("product_detail/${product.id}")
-                    }
+                    ProductGrid(
+                        products = womensProducts,
+                        onItemClick = { product ->
+                            navController.navigate("product_detail/${product.id}")
+                        },
+                        modifier = Modifier.padding(innerPadding)
+                    )
                 }
             }
         }

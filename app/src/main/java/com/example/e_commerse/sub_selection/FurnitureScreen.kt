@@ -9,6 +9,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,17 +29,13 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.e_commerse.BottomNavBar
+import com.example.e_commerse.NeonGreen
+import com.example.e_commerse.Product
 import com.example.e_commerse.R
 import com.example.e_commerse.Screen
+import com.google.firebase.firestore.FirebaseFirestore
 
-data class Furniture(val imgUrl: String, val name: String)
-
-val furnitureList = listOf(
-    Furniture("https://i.pinimg.com/1200x/a2/c4/c9/a2c4c9e1c609eb403b2ebe9bdc20b57f.jpg", "Sofa"),
-    Furniture("https://i.pinimg.com/736x/b0/c5/59/b0c559b4a50a4c2f67ee06d6c9c1d1a7.jpg", "Bean Bag"),
-    Furniture("https://i.pinimg.com/736x/bd/bc/a9/bdbca905d1f3b3895cc9570c8c70e9e2.jpg", "Chair"),
-    Furniture("https://i.pinimg.com/736x/87/e1/9e/87e19e4abf5dac13e54dc3b394ceb33d.jpg", "Dining Table")
-)
 
 
 
@@ -42,6 +43,8 @@ val furnitureList = listOf(
 @Composable
 fun FurnitureScreen(navController: NavController) {
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+
+    val db = FirebaseFirestore.getInstance()
 
     val bottomItems = listOf(
         Screen.HomeScreen,
@@ -58,143 +61,84 @@ fun FurnitureScreen(navController: NavController) {
         R.drawable.heart,
         R.drawable.outline_person_4_24
     )
+
+    var furnitureProducts by remember { mutableStateOf<List<Product>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        db.collection("products")
+            .whereEqualTo("mainCategory", "Furniture")
+            .get()
+            .addOnSuccessListener { snapshot ->
+                furnitureProducts = snapshot.documents.mapNotNull { doc ->
+                    doc.toObject(Product::class.java)?.copy(id = doc.id)
+                }
+                isLoading = false
+            }
+            .addOnFailureListener { isLoading = false }
+    }
+
     Scaffold(
-        containerColor = MatteBlack,
         topBar = {
-            CenterAlignedTopAppBar(
+            TopAppBar(
                 title = {
                     Text(
                         "Furniture",
-                        color = NeonGreen,
+                        color = Color.White,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 22.sp,
-                        textAlign = TextAlign.Center
+                        fontSize = 18.sp
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate(Screen.HomeScreen.route) }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = null, tint = NeonGreen)
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = null, tint = Color.White)
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Gray
+                    containerColor = Color(0xFF854836) // Dark surface
                 )
             )
         },
         bottomBar = {
-            NavigationBar(containerColor = Color.Black) {
-                bottomItems.forEachIndexed { index, screen ->
-                    NavigationBarItem(
-                        icon = {
-                            Icon(
-                                painter = painterResource(id = bottomIcons[index]),
-                                contentDescription = screen.route,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        },
-                        label = {
-                            Text(screen.route.substringBefore("/").replaceFirstChar { it.uppercase() })
-                        },
-                        selected = currentRoute == screen.route,
-                        onClick = {
-                            navController.navigate(screen.route) {
-                                popUpTo(Screen.HomeScreen.route) { inclusive = false }
-                                launchSingleTop = true
-                            }
-                        },
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = NeonGreen,
-                            selectedTextColor = NeonGreen,
-                            indicatorColor = Color.DarkGray,
-                            unselectedIconColor = Color.Gray,
-                            unselectedTextColor = Color.Gray
-                        )
-                    )
-                }
-            }
-        }
+            BottomNavBar(
+                navController = navController,
+                currentRoute = currentRoute,
+                bottomItems = bottomItems,
+                bottomIcons = bottomIcons,
+                backgroundColor = Color(0xFFFFF2D7)
+            )
+        },
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
-                .fillMaxSize()
-                .background(MatteBlack)
-                .padding(12.dp)
-        ) {
-            FurnitureGridWithTitle("Furniture", furnitureList){ item ->
-            }
-        }
-    }
-}
 
-@Composable
-fun FurnitureGridWithTitle(
-    title: String,
-    list: List<Furniture>,
-    onItemClick: (Furniture) -> Unit = {}
-) {
-    Column {
-        Text(
-            text = title,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            color = NeonGreen,
-            modifier = Modifier.padding(start = 8.dp, bottom = 12.dp)
-        )
-
-        val chunked = list.chunked(2)
-        chunked.forEach { rowItems ->
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+        if (isLoading) {
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 20.dp)
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                contentAlignment = Alignment.Center
             ) {
-                for (item in rowItems) {
-                    FurnitureItemCard(item = item, onClick = onItemClick, modifier = Modifier.weight(1f))
-                }
-                if (rowItems.size == 1) {
-                    Spacer(modifier = Modifier.weight(1f))
+                CircularProgressIndicator(color = NeonGreen)
+            }
+        } else {
+            Box(
+                Modifier
+                    .background(Color(0xFFF9F8F6))
+                    .fillMaxSize()
+            ) {
+
+                if (furnitureProducts.isNotEmpty()) {
+
+                    Column(Modifier.padding(innerPadding)) {
+
+                        ProductGrid(
+                            products = furnitureProducts,
+                            onItemClick = { product ->
+                                navController.navigate("product_detail/${product.id}")
+                            }
+                        )
+                    }
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun FurnitureItemCard(item: Furniture, onClick: (Furniture) -> Unit, modifier: Modifier = Modifier) {
-    Card(
-        modifier = modifier
-            .height(220.dp)
-            .clip(RoundedCornerShape(16.dp)),
-        onClick = { onClick(item) },
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1C)),
-        elevation = CardDefaults.cardElevation(8.dp),
-    ) {
-        Column {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(item.imgUrl)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = item.name,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Text(
-                text = item.name,
-                fontWeight = FontWeight.Medium,
-                fontSize = 16.sp,
-                color = NeonGreen,
-                modifier = Modifier.padding(horizontal = 12.dp)
-            )
         }
     }
 }
