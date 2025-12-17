@@ -90,6 +90,11 @@ Android Developer | Jetpack Compose Enthusiast
 
 ---
 
+## 📥 Download APK
+
+👉 [Download Luxora App]([https://github.com/Ashu-sosuke/Luxora/releases/download/v1.0.0/app-release.apk](https://github.com/Ashu-sosuke/Luxora/releases/download/v1.0/app-debug.apk))
+
+
 ## ⭐ Show Your Support
 
 If you like this project, give it a ⭐ on GitHub!
