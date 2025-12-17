@@ -95,7 +95,7 @@ Android Developer | Jetpack Compose Enthusiast
 
 ## 📥 Download APK
 
-[![Download APK](https://img.shields.io/badge/Download-APK-black?style=for-the-badge)](https://github.com/Ashu-sosuke/Luxora/releases/download/v1.0.0/Luxora-v1.0.apk)
+[![Download APK](https://img.shields.io/badge/Download-APK-black?style=for-the-badge)](https://github.com/Ashu-sosuke/Luxora/releases/download/v1.0/app-debug.apk)
 
 
 
