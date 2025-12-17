@@ -1,7 +1,10 @@
 # LUXORA
 # 🛒 E-Commerce Android App (Jetpack Compose)
 
-<img width="500" height="500" alt="Luxora Logo - Emblem Style, Navy and Gold" src="https://github.com/user-attachments/assets/a0dccf34-eddc-40a8-99dc-abae7f903ae1" />
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/a0dccf34-eddc-40a8-99dc-abae7f903ae1" width="300"/>
+</p>
+
 
 
 A modern, clean, and fully functional **E-Commerce Android application** built with **Jetpack Compose** and powered by **Firebase**. The app supports real-time product updates, user-specific wishlists, search, affiliate purchases, and an admin panel for product management.
@@ -92,7 +95,8 @@ Android Developer | Jetpack Compose Enthusiast
 
 ## 📥 Download APK
 
-👉 [Download Luxora App]([https://github.com/Ashu-sosuke/Luxora/releases/download/v1.0.0/app-release.apk](https://github.com/Ashu-sosuke/Luxora/releases/download/v1.0/app-debug.apk))
+[![Download APK](https://img.shields.io/badge/Download-APK-black?style=for-the-badge)](https://github.com/Ashu-sosuke/Luxora/releases/download/v1.0.0/Luxora-v1.0.apk)
+
 
 
 ## ⭐ Show Your Support
