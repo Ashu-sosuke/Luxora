@@ -1,56 +1,92 @@
-# 🛒 E-Commerce Android App
+# LUXORA
+# 🛒 E-Commerce Android App (Jetpack Compose)
 
-An elegant and responsive e-commerce Android app built using **Jetpack Compose**, integrated with **Firebase Authentication**, **Firestore**, **Image Upload**, **UPI Payments**, and **Admin Controls**.
+A modern, clean, and fully functional **E-Commerce Android application** built with **Jetpack Compose** and powered by **Firebase**. The app supports real-time product updates, user-specific wishlists, search, affiliate purchases, and an admin panel for product management.
+
+---
 
 ## ✨ Features
 
-### 🧑 User Side
-- 🔐 Firebase Authentication (Phone/Email Login)
-- 🏠 Home Screen with:
-  - 🔄 Image Slider
-  - 🔝 Top Picks Grid
-  - 🗂️ Categories
-- 📦 Product Listing (with dynamic loading)
-- ❤️ Wishlist Management
-- 🛒 Cart and Order Placement
-- 💸 UPI Payment Integration
-- 📜 Order History
-- 👤 Profile & Logout
+### 👤 User Side
 
-### 👨‍💻 Admin Panel
-- ✅ Add/Edit/Delete Products
-- 📌 Mark products as **Top Picks**
-- 📸 Upload product images
-- 📦 Manage orders & track users
+* 🔐 Firebase Authentication (Email / Phone)
+* 🏠 Home Screen
+
+  * 🔄 Auto Image Slider
+  * 🗂️ Category Browsing
+  * 👀 Recently Viewed Products (Room DB)
+* 🔍 Real-time Product Search (Firestore)
+* ❤️ Wishlist (User-specific, Firestore)
+* 🛍️ Product Detail Screen
+
+  * Image carousel
+  * Product description & pricing
+  * Affiliate **Buy Now** option (Amazon link)
+* 💸 UPI / External Payment via Intent
+* 👤 Profile & Logout
+
+
+
+---
+
+## 🧱 Architecture
+
+* **MVVM (Model–View–ViewModel)**
+* **Repository Pattern**
+* **State Hoisting & Compose State**
 
 ---
 
 ## 🏗️ Tech Stack
 
-| Layer       | Technology                         |
-|-------------|-------------------------------------|
-| UI          | Jetpack Compose + Material 3        |
-| Auth        | Firebase Authentication             |
-| Database    | Firebase Firestore                  |
-| Storage     | Firebase Storage                    |
-| Image Load  | Coil                                 |
-| Payments    | UPI Intent via Android              |
-| State Mgmt  | ViewModel + State Hoisting          |
-| Navigation  | Jetpack Compose Navigation          |
-| Architecture| MVVM                                 |
+| Layer         | Technology                   |
+| ------------- | ---------------------------- |
+| UI            | Jetpack Compose + Material 3 |
+| Language      | Kotlin                       |
+| Auth          | Firebase Authentication      |
+| Database      | Firebase Firestore           |
+| Storage       | Firebase Storage             |
+| Local Cache   | Room (Recently Viewed)       |
+| Image Loading | Coil                         |
+| Payments      | UPI / External Intent        |
+| Navigation    | Jetpack Compose Navigation   |
+| Architecture  | MVVM                         |
 
 ---
 
+
+
 ## 📸 Screenshots
 
-<img width="383" height="806" alt="Screenshot 2025-07-25 134739" src="https://github.com/user-attachments/assets/38d57bd5-c528-4d28-ad82-5016b524b1a2" />
-<img width="379" height="761" alt="Screenshot 2025-11-10 222856" src="https://github.com/user-attachments/assets/41ce2d9a-0ac2-47a3-9495-25dc0f1d878a" />
+<p align="center">
+  <img width="392" height="798" alt="image" src="https://github.com/user-attachments/assets/fef6cbd4-72ab-43f2-825c-1755c2eb7d52" />
+<img width="379" height="792" alt="image" src="https://github.com/user-attachments/assets/1042ceea-1dbc-444d-ac3c-4d4983c5da3e" />
+<img width="390" height="807" alt="image" src="https://github.com/user-attachments/assets/cce38f4a-d2c8-49dc-bc90-90e6a5d4305f" />
 
 
-## Demo
+</p>
+
+---
 
 
-### 🚀 Setup
-1. Clone the repo:
-   ```bash
-   git clone https://github.com/yourusername/e-commerce-app.git
+
+## 🧪 Future Improvements
+
+* 🔔 Push Notifications
+* 🧾 Order Tracking
+* 💳 Razorpay / Stripe Integration
+* 🌐 Pagination & Filters
+* 🌙 Dark Mode
+
+---
+
+## 🙌 Author
+
+**Your Name**
+Android Developer | Jetpack Compose Enthusiast
+
+---
+
+## ⭐ Show Your Support
+
+If you like this project, give it a ⭐ on GitHub!
