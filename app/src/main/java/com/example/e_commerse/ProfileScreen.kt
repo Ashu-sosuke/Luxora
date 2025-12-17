@@ -6,6 +6,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
@@ -48,7 +49,6 @@ fun ProfileScreen(
     val bottomItems = listOf(
         Screen.HomeScreen,
         Screen.ExploreScreen,
-        Screen.OrderScreen,
         Screen.WishlistScreen,
         Screen.ProfileScreen
     )
@@ -56,7 +56,6 @@ fun ProfileScreen(
     val bottomIcons = listOf(
         R.drawable.baseline_home_24,
         R.drawable.expolre,
-        R.drawable.outline_shopping_cart_24,
         R.drawable.icons8_heart_50,
         R.drawable.outline_person_4_24
     )
@@ -66,18 +65,30 @@ fun ProfileScreen(
     Scaffold(
         containerColor = MatteWhite,
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Profile",
-                        color = NeonBlue,
+                        text = "User's Profile",
+                        color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 24.sp
                     )
                 },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        navController.navigate(Screen.HomeScreen.route)
+                    }) {
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            null,
+                            tint = Color.White
+                        )
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MatteBlack
-                )
+                    containerColor = Color(0xFF854836)
+                ),
+
             )
         },
         bottomBar = {
@@ -144,7 +155,7 @@ fun ProfileContent(
                 .height(50.dp),
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = NeonGreen,
+                containerColor = Color(0xFFB87C4C),
                 contentColor = MatteBlack
             )
         ) {
@@ -152,7 +163,6 @@ fun ProfileContent(
         }
     }
 }
-
 @Composable
 fun ProfileCard(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, value: String) {
     Card(
@@ -160,7 +170,7 @@ fun ProfileCard(icon: androidx.compose.ui.graphics.vector.ImageVector, label: St
             .fillMaxWidth()
             .padding(vertical = 6.dp),
         colors = CardDefaults.cardColors(
-            containerColor = LightBlue
+            containerColor = Color(0xFFEBD5AB)
         ),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(4.dp)
@@ -172,7 +182,7 @@ fun ProfileCard(icon: androidx.compose.ui.graphics.vector.ImageVector, label: St
             Icon(
                 imageVector = icon,
                 contentDescription = label,
-                tint = Color.Blue,
+                tint = Color(0xFF854836),
                 modifier = Modifier
                     .size(28.dp)
                     .padding(end = 12.dp)

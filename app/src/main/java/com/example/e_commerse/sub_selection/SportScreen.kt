@@ -47,7 +47,6 @@ fun SportScreen(navController: NavController) {
     val bottomItems = listOf(
         Screen.HomeScreen,
         Screen.ExploreScreen,
-        Screen.OrderScreen,
         Screen.WishlistScreen,
         Screen.ProfileScreen
     )
@@ -55,7 +54,6 @@ fun SportScreen(navController: NavController) {
     val bottomIcons = listOf(
         R.drawable.baseline_home_24,
         R.drawable.expolre,
-        R.drawable.outline_shopping_cart_24,
         R.drawable.heart,
         R.drawable.outline_person_4_24
     )

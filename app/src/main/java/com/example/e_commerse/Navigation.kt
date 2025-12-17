@@ -35,15 +35,12 @@ fun Navigation() {
         // ----------------------------
         composable(Screen.HomeScreen.route) { HomeScreen(navController) }
         composable(Screen.ExploreScreen.route) { ExploreScreen(navController) }
-        composable(Screen.OrderScreen.route) { OrdersScreen(navController) }
         composable(Screen.WishlistScreen.route) { WishlistScreen(navController) }
         composable(Screen.ProfileScreen.route) {
             ProfileScreen(navController = navController, authViewModel = authViewModel)
         }
 
-        // ----------------------------
-        // 🔹 CATEGORY SCREENS
-        // ----------------------------
+
         composable(Screen.MenFashionScreen.route) { MenFashionScreen(navController) }
         composable(Screen.WomenFashionScreen.route) { WomenFashionScreen(navController) }
         composable(Screen.ElectronicScreen.route) { ElectronicScreen(navController) }
@@ -53,9 +50,7 @@ fun Navigation() {
         composable(Screen.SmartDevice.route) { SmartDevice(navController) }
         composable(Screen.KitchenScreen.route) { KitchenScreen(navController) }
 
-        // ----------------------------
-        // 🔹 PRODUCT LIST SCREEN (Dynamic from Firestore)
-        // ----------------------------
+
         composable(
             route = "product_list/{mainCategory}/{subCategory}",
             arguments = listOf(

@@ -52,7 +52,7 @@ fun RVScreen(
     Text(
         text = "Recently Viewed",
         fontWeight = FontWeight.Bold,
-        fontSize = 25.sp,
+        fontSize = 20.sp,
         color = Color.Black,
         modifier = Modifier.padding(16.dp)
     )
@@ -105,7 +105,7 @@ fun RvProductCard(
 
             Text(
                 text = product.name,
-                fontSize = 18.sp,
+                fontSize = 12.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = Color.Black,
                 fontFamily = FontFamily.Default,
@@ -116,7 +116,7 @@ fun RvProductCard(
 
             Text(
                 text = "₹${product.price}",
-                fontSize = 15.sp,
+                fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )

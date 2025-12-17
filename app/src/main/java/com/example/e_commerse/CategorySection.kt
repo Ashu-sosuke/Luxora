@@ -57,7 +57,7 @@ fun CategoryItemView(item: CategoryItem, onClick: () -> Unit) {
             .background(Color(0xFFA67B5B))
             .clickable(onClick = onClick)
             .padding(8.dp)
-            .size(150.dp),
+            .size(120.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -69,12 +69,11 @@ fun CategoryItemView(item: CategoryItem, onClick: () -> Unit) {
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = item.label,
-            fontSize = 18.sp,
+            fontSize = 12.sp,
             fontFamily = FontFamily.Default,
             fontWeight = FontWeight.Medium,
             color = Color.White,
-            textAlign = TextAlign.Center,
-            maxLines = 2
+            textAlign = TextAlign.Center
         )
     }
 }
@@ -111,7 +110,7 @@ fun CategoriesSection(
 
         Text(
             text = "Categories",
-            fontSize = 25.sp,
+            fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black,
             modifier = Modifier

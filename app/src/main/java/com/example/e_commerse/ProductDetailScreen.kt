@@ -2,6 +2,7 @@ package com.example.e_commerse
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -10,12 +11,14 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,6 +43,9 @@ fun ProductDetailScreen(
         factory = RVViewModelFactory(repo)
     )
 
+    var isWishlisted by remember { mutableStateOf(false) }
+
+    val wishlistRepo = remember { WishlistRepo() }
     var product by remember { mutableStateOf<Product?>(null) }
     var isLoading by remember { mutableStateOf(true) }
 
@@ -51,15 +57,19 @@ fun ProductDetailScreen(
                 product = loaded
                 isLoading = false
 
-                if (loaded != null) {
+                loaded?.let {
                     rvViewmodel.saveRecentlyViewed(
                         ProductEntity(
-                            id = loaded.id,
-                            name = loaded.name,
-                            price = loaded.price,
-                            imageUrl = loaded.images.firstOrNull() ?: ""
+                            id = it.id,
+                            name = it.name,
+                            price = it.price,
+                            imageUrl = it.images.firstOrNull() ?: ""
                         )
                     )
+
+                    wishlistRepo.isInWishlist(it.id) { exists ->
+                        isWishlisted = exists
+                    }
                 }
             }
             .addOnFailureListener {
@@ -67,26 +77,63 @@ fun ProductDetailScreen(
             }
     }
 
+
     Scaffold(
         bottomBar = {
-            if (product != null) {
-                BottomActionBar(onCart = {}, onWish = {})
+            product?.let { p ->
+                BottomActionBar(
+                    isWishlisted = isWishlisted,
+                    onWish = {
+                        if (isWishlisted) {
+                            wishlistRepo.removeFromWishlist(p.id) { success ->
+                                if (success) isWishlisted = false
+                            }
+                        } else {
+                            wishlistRepo.addToWishlist(p) { success ->
+                                if (success) isWishlisted = true
+                            }
+                        }
+                    },
+                    onBuy = {
+                        val url = p.affiliateLink
+                        if (url.isNotBlank()) {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+                                setPackage("com.amazon.mShop.android.shopping")
+                            }
+
+                            try {
+                                context.startActivity(intent)
+                            } catch (e: Exception) {
+                                context.startActivity(
+                                    Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                )
+                            }
+                        }
+                    }
+
+
+                )
             }
         },
         containerColor = Color(0xFFF9F8F6)
-    ) { padding ->
+    )
+    { padding ->
 
         when {
             isLoading -> {
                 Box(
-                    modifier = Modifier.fillMaxSize().padding(padding),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
                     contentAlignment = Alignment.Center
                 ) { CircularProgressIndicator(color = Color.Black) }
             }
 
             product == null -> {
                 Box(
-                    modifier = Modifier.fillMaxSize().padding(padding),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
                     contentAlignment = Alignment.Center
                 ) { Text("Product not found", color = Color.Black) }
             }
@@ -198,7 +245,22 @@ fun ProductDetailScreen(
 // FIXED BOTTOM BAR — NOT SCROLLABLE
 // =============================================================
 @Composable
-fun BottomActionBar(onCart: () -> Unit, onWish: () -> Unit) {
+fun BottomActionBar(
+    isWishlisted: Boolean,
+    onWish: () -> Unit,
+    onBuy: () -> Unit
+) {
+
+    val bgColor by animateColorAsState(
+        targetValue = if (isWishlisted) Color.Red else Color(0xFFF2F2F2),
+        label = ""
+    )
+
+    val textColor by animateColorAsState(
+        targetValue = if (isWishlisted) Color.White else Color.Black,
+        label = ""
+    )
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -209,16 +271,54 @@ fun BottomActionBar(onCart: () -> Unit, onWish: () -> Unit) {
 
         Button(
             onClick = onWish,
-            modifier = Modifier.weight(1f).height(50.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE0E0E0))
-        ) { Text("Wishlist", color = Color.Black) }
+            modifier = Modifier
+                .weight(1f)
+                .height(50.dp),
+            shape = RoundedCornerShape(14.dp),
+            elevation = ButtonDefaults.buttonElevation(
+                defaultElevation = 3.dp,
+                pressedElevation = 1.dp
+            ),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = bgColor,
+                contentColor = textColor
+            )
+
+        ) {
+            Icon(
+                painter = painterResource(
+                    if (isWishlisted) R.drawable.heart else R.drawable.icons8_heart_50
+                ),
+                contentDescription = null,
+                modifier = Modifier.size(20.dp)
+            )
+
+            Spacer(Modifier.width(8.dp))
+
+            Text(
+                text = if (isWishlisted) "Wishlisted" else "Add to Wishlist",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium
+            )
+        }
+
 
         Spacer(Modifier.width(12.dp))
 
         Button(
-            onClick = onCart,
-            modifier = Modifier.weight(1f).height(50.dp),
+            onClick = onBuy,
+            modifier = Modifier
+                .weight(1f)
+                .height(50.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
-        ) { Text("Add to Cart", color = Color.White) }
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.outline_currency_rupee_24),
+                contentDescription = null,
+                tint = Color.White
+            )
+            Spacer(Modifier.width(6.dp))
+            Text("Buy Now", color = Color.White)
+        }
     }
 }

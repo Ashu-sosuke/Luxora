@@ -40,14 +40,12 @@ fun ExploreScreen(navController: NavController) {
     val bottomIcons = listOf(
         R.drawable.outline_home_24,
         R.drawable.expolre,
-        R.drawable.outline_shopping_cart_24,
         R.drawable.icons8_heart_50,
         R.drawable.outline_person_4_24
     )
     val bottomItems = listOf(
         Screen.HomeScreen,
         Screen.ExploreScreen,
-        Screen.OrderScreen,
         Screen.WishlistScreen,
         Screen.ProfileScreen
     )

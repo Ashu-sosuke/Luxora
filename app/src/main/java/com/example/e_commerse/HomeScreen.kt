@@ -1,6 +1,7 @@
 package com.example.e_commerse
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
@@ -32,6 +33,7 @@ import com.example.e_commerse.recently_viewed.RVRepo
 import com.example.e_commerse.recently_viewed.RVScreen
 import com.example.e_commerse.recently_viewed.RVViewModelFactory
 import com.example.e_commerse.recently_viewed.RvViewmodel
+import com.example.e_commerse.sub_selection.ProductCard
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -74,14 +76,12 @@ fun HomeScreen(navController: NavHostController) {
                 bottomItems = listOf(
                     Screen.HomeScreen,
                     Screen.ExploreScreen,
-                    Screen.OrderScreen,
                     Screen.WishlistScreen,
                     Screen.ProfileScreen
                 ),
                 bottomIcons = listOf(
                     R.drawable.outline_home_24,
                     R.drawable.expolre,
-                    R.drawable.outline_shopping_cart_24,
                     R.drawable.icons8_heart_50,
                     R.drawable.outline_person_4_24
                 ),
@@ -93,14 +93,7 @@ fun HomeScreen(navController: NavHostController) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0xFFFFEAC5),
-                            Color(0xFFF8F4E1),
-                        )
-                    )
-                )
+                .background(Color.White)
                 .padding(innerPadding)
         ) {
             HomeContent(
@@ -116,50 +109,87 @@ fun HomeContent(
     navController: NavController,
     rvViewmodel: RvViewmodel
 ) {
+
+    val searchViewModel: SearchViewModel = viewModel()
+
+    var searchQuery by remember { mutableStateOf("") }
+    var products by remember { mutableStateOf<List<Product>>(emptyList()) }
+
+    LaunchedEffect(searchQuery) {
+        searchViewModel.searchProducts(searchQuery) {
+            products = it
+        }
+    }
+
     val scrollState = rememberScrollState()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(scrollState)
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.Center
+            .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
 
-        SearchBar()
-        ImageSlider()
-
-        HorizontalDivider(
-            modifier = Modifier.padding(vertical = 10.dp),
-            thickness = 1.dp,
-            color = Color(0xFFB08968).copy(alpha = 0.5f)
+        SearchBar(
+            searchQuery = searchQuery,
+            onQueryChange = { searchQuery = it }
         )
 
         Spacer(Modifier.height(8.dp))
 
-        CategoriesSection(categoryItems = categoryItems, navController = navController)
+        if (searchQuery.isNotBlank()) {
+            Column {
+                products.forEach { product ->
+                    Text(
+                        text = product.name,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                navController.navigate("product_detail/${product.id}")
+                            }
+                            .padding(vertical = 12.dp),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.Black
+                    )
 
-        Spacer(Modifier.height(16.dp))
+                    Divider(color = Color.LightGray)
+                }
+            }
+        }
+        else {
 
-        HorizontalDivider(
-            modifier = Modifier.padding(vertical = 10.dp),
-            thickness = 1.dp,
-            color = Color(0xFFB08968).copy(alpha = 0.5f)
-        )
+            // 🏠 HOME CONTENT
+            ImageSlider()
 
+            Spacer(Modifier.height(12.dp))
 
-        RVScreen(
-            navController = navController,
-            viewmodel = rvViewmodel
-        )
+            CategoriesSection(categoryItems, navController)
 
-        Spacer(Modifier.height(80.dp))
+            Spacer(Modifier.height(16.dp))
+
+            HorizontalDivider(
+                thickness = 1.dp,
+                color = Color(0xFFB08968).copy(alpha = 0.5f)
+            )
+
+            Spacer(Modifier.height(16.dp))
+
+            RVScreen(navController, rvViewmodel)
+
+            Spacer(Modifier.height(80.dp))
+        }
     }
+
 }
 
 @Composable
-fun SearchBar() {
-    var searchQuery by remember { mutableStateOf("") }
+fun SearchBar(
+    searchQuery: String,
+    onQueryChange: (String) -> Unit
+) {
+
+
 
     Row(
         modifier = Modifier
@@ -169,14 +199,14 @@ fun SearchBar() {
     ) {
         OutlinedTextField(
             value = searchQuery,
-            onValueChange = { searchQuery = it },
+            onValueChange = onQueryChange,
             placeholder = { Text("Search Products....", color = Color.Gray) },
             leadingIcon = {
                 Icon(Icons.Default.Search, contentDescription = null, tint = NeonBlue)
             },
             trailingIcon = {
                 if (searchQuery.isNotEmpty()) {
-                    IconButton(onClick = { searchQuery = "" }) {
+                    IconButton(onClick = { onQueryChange("")}) {
                         Icon(Icons.Default.Close, contentDescription = null, tint = NeonBlue)
                     }
                 }

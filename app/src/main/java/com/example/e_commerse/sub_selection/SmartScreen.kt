@@ -37,14 +37,7 @@ import com.example.e_commerse.Screen
 import com.google.firebase.firestore.FirebaseFirestore
 
 
-data class SmartDeviceItem(val imgUrl: String, val name: String)
 
-val smartDevices = listOf(
-    SmartDeviceItem("https://i.pinimg.com/1200x/30/31/d5/3031d56c15c8596052f306b011c8d7dc.jpg", "Smart Watch"),
-    SmartDeviceItem("https://i.pinimg.com/736x/52/15/08/521508be423bd5a2fd5f3fa3400d1e3f.jpg", "Smart Glass"),
-    SmartDeviceItem("https://i.pinimg.com/1200x/f4/93/9c/f4939cc01b84bc5a20131886059702c3.jpg", "Smart Brush"),
-    SmartDeviceItem("https://i.pinimg.com/736x/33/56/2c/33562cee85696d8b89e44e4098164b6e.jpg", "Smart Bottle")
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,7 +49,6 @@ fun SmartDevice(navController: NavController) {
     val bottomItems = listOf(
         Screen.HomeScreen,
         Screen.ExploreScreen,
-        Screen.OrderScreen,
         Screen.WishlistScreen,
         Screen.ProfileScreen
     )
@@ -64,7 +56,6 @@ fun SmartDevice(navController: NavController) {
     val bottomIcons = listOf(
         R.drawable.baseline_home_24,
         R.drawable.expolre,
-        R.drawable.outline_shopping_cart_24,
         R.drawable.heart,
         R.drawable.outline_person_4_24
     )

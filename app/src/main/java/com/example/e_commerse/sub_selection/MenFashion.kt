@@ -48,14 +48,15 @@ val MatteWhite = Color(0xFFF5F7FA)
 fun MenFashionScreen(navController: NavController) {
 
     val bottomItems = listOf(
-        Screen.HomeScreen, Screen.ExploreScreen, Screen.OrderScreen,
-        Screen.WishlistScreen, Screen.ProfileScreen
+        Screen.HomeScreen,
+        Screen.ExploreScreen,
+        Screen.WishlistScreen,
+        Screen.ProfileScreen
     )
 
     val bottomIcons = listOf(
         R.drawable.outline_home_24,
         R.drawable.expolre,
-        R.drawable.outline_shopping_cart_24,
         R.drawable.icons8_heart_50,
         R.drawable.outline_person_4_24
     )
@@ -180,6 +181,8 @@ fun ProductCard(product: Product, onItemClick: (Product) -> Unit, cardColor: Col
     val pagerState = rememberPagerState(pageCount = { Int.MAX_VALUE })
 
     fun realIndex(page: Int): Int = page % images.size
+
+
 
     LaunchedEffect(Unit) {
         while (true) {

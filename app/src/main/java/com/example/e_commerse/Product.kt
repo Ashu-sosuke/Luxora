@@ -11,4 +11,5 @@ data class Product(
     val affiliateLink: String = "",
     val images: List<String> = emptyList(),
     val description: String? = null,
-    val createdAt: com.google.firebase.Timestamp? = null)
+    val createdAt: com.google.firebase.Timestamp? = null
+)
