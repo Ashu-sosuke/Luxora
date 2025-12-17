@@ -85,7 +85,7 @@ A modern, clean, and fully functional **E-Commerce Android application** built w
 
 ## 🙌 Author
 
-**Your Name**
+**Ashutosh**
 Android Developer | Jetpack Compose Enthusiast
 
 ---
